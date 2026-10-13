@@ -16,10 +16,12 @@ export function StoryCard({
   post,
   category,
   size = "small",
+  className = "",
 }: {
   post: Post;
   category?: Category;
   size?: "mini" | "small" | "large";
+  className?: string;
 }) {
   if (size === "mini") {
     return (
@@ -49,27 +51,23 @@ export function StoryCard({
     <article
       className={`group relative isolate overflow-hidden rounded-[1.75rem] border border-white/70 shadow-glass ${
         large ? "aspect-[4/5]" : "aspect-[16/11]"
-      }`}
+      } ${className}`}
     >
       <div className="absolute inset-0 transition duration-700 ease-out group-hover:scale-[1.05]">
         <Cover category={category} title={post.title} url={post.coverUrl} className="h-full w-full" />
       </div>
       <div className="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
 
-      <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+      <Link to="/post/$slug" params={{ slug: post.slug }} aria-label={post.title} className="absolute inset-0 z-10" />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4 sm:p-5">
         {category ? (
           <span className="glass-dark inline-block rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-white">
             {category.name}
           </span>
         ) : null}
-        <h3 className={`mt-2 font-bold leading-snug text-white ${large ? "text-2xl" : "text-base"}`}>
-          <Link
-            to="/post/$slug"
-            params={{ slug: post.slug }}
-            className="after:absolute after:inset-0 after:content-['']"
-          >
-            {post.title}
-          </Link>
+        <h3 className={`mt-2 font-bold leading-snug text-white ${large ? "text-2xl" : "line-clamp-3 text-base"}`}>
+          {post.title}
         </h3>
         {large ? <p className="mt-2 line-clamp-2 text-sm text-white/75">{post.summary}</p> : null}
         <div className="mt-3 flex items-center justify-between gap-3">

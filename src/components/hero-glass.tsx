@@ -1,3 +1,4 @@
+import { categorySlug } from "@/lib/category-slug";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Cover } from "@/components/cover";
@@ -5,15 +6,6 @@ import { ArrowIcon } from "@/components/icons";
 import { TestedBadge } from "@/components/tested-seal";
 import type { Post } from "@/lib/types";
 
-const slugs: Record<string, string> = {
-  Crypto: "crypto",
-  "AI Tools": "ai-tools",
-  SaaS: "saas",
-  Reviews: "reviews",
-  Comparisons: "comparisons",
-  Guides: "guides",
-  Deals: "deals",
-};
 
 export function HeroGlass({
   posts,
@@ -48,7 +40,7 @@ export function HeroGlass({
         <Cover
           title={post.title}
           url={post.coverUrl}
-          category={{ id: "", slug: slugs[name] ?? "guides", name, description: "" }}
+          category={{ id: "", slug: categorySlug(name), name, description: "" }}
           className="h-full w-full"
         />
       </div>

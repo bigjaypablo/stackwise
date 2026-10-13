@@ -47,7 +47,7 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
   const loop = [...titles, ...titles];
 
   return (
-    <header className="border-b border-line bg-paper">
+    <header className="border-b border-white/60 bg-white/60 backdrop-blur-xl">
       <div className="border-b border-line">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2 text-xs text-ink/70">
           <p className="hidden shrink-0 sm:block">
@@ -77,7 +77,7 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
         </Link>
         <form
           role="search"
-          className="order-3 flex w-full items-center rounded-full border border-line bg-mist sm:order-none sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
+          className="order-3 flex w-full items-center rounded-full border border-white/80 bg-white/70 sm:order-none sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
           onSubmit={(event) => {
             event.preventDefault();
             navigate({ to: "/search", search: { q: query } });
