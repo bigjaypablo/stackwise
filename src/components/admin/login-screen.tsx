@@ -1,7 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Logo } from "@/components/logo";
-import { demoMode, getSession, signIn, signUp } from "@/lib/api";
+import { demoMode, signIn, signUp } from "@/lib/api";
+
+const DEMO_EMAILS = ["admin@demo.com", "editor@demo.com", "writer@demo.com"];
 
 export function LoginScreen() {
   const navigate = useNavigate();
@@ -13,15 +15,24 @@ export function LoginScreen() {
   const [pending, setPending] = useState(false);
 
   return (
-    <div className="grid min-h-screen place-items-center bg-mist px-4 py-10">
-      <div className="w-full max-w-md rounded-3xl border border-line bg-paper p-6 shadow-sm">
+    <div className="relative grid min-h-screen place-items-center overflow-hidden bg-ink px-4 py-10 text-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 -top-24 size-96 rounded-full bg-accent/40 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-32 -right-24 size-[28rem] rounded-full bg-indigo-500/25 blur-3xl"
+      />
+
+      <div className="glass-night relative w-full max-w-md rounded-[1.75rem] p-6 sm:p-8">
         <Link to="/" aria-label="Stackwise home">
-          <Logo />
+          <Logo tone="paper" />
         </Link>
         <h1 className="mt-6 text-2xl font-extrabold">Desk sign in</h1>
-        <p className="mt-2 text-sm text-ink/70">Writers draft. Editors publish. Admins keep the affiliate list.</p>
+        <p className="mt-2 text-sm text-white/65">Writers draft. Editors publish. Admins keep the affiliate list.</p>
         {demoMode ? (
-          <p className="mt-3 rounded-xl bg-mist px-3 py-2 text-sm">
+          <p className="glass-dark mt-3 rounded-xl px-3 py-2 text-sm text-white/80">
             Demo mode. Password for every sample account is demo1234.
           </p>
         ) : null}
@@ -49,7 +60,7 @@ export function LoginScreen() {
           }}
         >
           <div>
-            <label htmlFor="desk-email" className="text-sm font-semibold">
+            <label htmlFor="desk-email" className="text-sm font-semibold text-white/85">
               Email
             </label>
             <input
@@ -59,11 +70,11 @@ export function LoginScreen() {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-1 h-12 w-full rounded-xl border border-line px-3"
+              className="field-dark mt-1 h-12"
             />
           </div>
           <div>
-            <label htmlFor="desk-password" className="text-sm font-semibold">
+            <label htmlFor="desk-password" className="text-sm font-semibold text-white/85">
               Password
             </label>
             <input
@@ -74,27 +85,32 @@ export function LoginScreen() {
               minLength={8}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-1 h-12 w-full rounded-xl border border-line px-3"
+              className="field-dark mt-1 h-12"
             />
           </div>
           {error ? (
-            <p className="text-sm text-accent" role="alert">
+            <p className="text-sm text-red-300" role="alert">
               {error}
             </p>
           ) : null}
           {notice ? (
-            <p className="text-sm text-ink" role="status">
+            <p className="text-sm text-emerald-300" role="status">
               {notice}
             </p>
           ) : null}
-          <button type="submit" disabled={pending} className="h-12 w-full rounded-full bg-accent font-semibold text-paper disabled:opacity-60">
+          <button type="submit" disabled={pending} className="pill-accent h-12 w-full disabled:opacity-60">
             {pending ? "Working…" : mode === "up" ? "Create writer account" : "Sign in"}
           </button>
         </form>
         {demoMode ? (
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
-            {["admin@demo.com", "editor@demo.com", "writer@demo.com"].map((item) => (
-              <button key={item} type="button" className="rounded-full bg-mist px-3 py-2 font-semibold" onClick={() => setEmail(item)}>
+            {DEMO_EMAILS.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className="glass-dark rounded-full px-3 py-2 font-semibold text-white/85 hover:bg-white/15"
+                onClick={() => setEmail(item)}
+              >
                 {item}
               </button>
             ))}
@@ -102,7 +118,7 @@ export function LoginScreen() {
         ) : (
           <button
             type="button"
-            className="mt-4 text-sm font-semibold text-accent"
+            className="mt-4 text-sm font-semibold text-blue-300"
             onClick={() => {
               setMode((value) => (value === "in" ? "up" : "in"));
               setError("");
@@ -111,15 +127,6 @@ export function LoginScreen() {
             {mode === "in" ? "New writer? Create an account" : "Have an account? Sign in"}
           </button>
         )}
-        <button
-          type="button"
-          className="mt-3 hidden"
-          onClick={() => {
-            getSession().catch(() => undefined);
-          }}
-        >
-          refresh
-        </button>
       </div>
     </div>
   );

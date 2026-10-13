@@ -23,6 +23,7 @@
       radial-gradient(900px 480px at 8% -8%, #e4e8ff 0%, transparent 62%),
       radial-gradient(800px 460px at 100% 4%, #e6f0ff 0%, transparent 58%),
       var(--color-haze);
+    background-attachment: fixed;
     color: var(--color-ink);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
@@ -71,57 +72,126 @@
   }
 }
 
-/* Frosted light card (reference style 2) */
-.glass {
-  background: rgb(255 255 255 / 0.62);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid rgb(255 255 255 / 0.75);
-  box-shadow: var(--shadow-glass);
-}
+@layer components {
+  /* Frosted light card */
+  .glass {
+    background: rgb(255 255 255 / 0.62);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    box-shadow: var(--shadow-glass);
+  }
 
-/* Frosted dark chip or panel that sits on top of images */
-.glass-dark {
-  background: rgb(10 15 30 / 0.38);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
-  backdrop-filter: blur(14px) saturate(1.3);
-  border: 1px solid rgb(255 255 255 / 0.18);
-}
+  /* Frosted dark chip or panel that sits on images */
+  .glass-dark {
+    background: rgb(10 15 30 / 0.38);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid rgb(255 255 255 / 0.18);
+  }
 
-/* Glass pill button on images (reference style 1) */
-.pill-glass {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 9999px;
-  padding: 0.45rem 0.85rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #fff;
-  background: rgb(255 255 255 / 0.18);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgb(255 255 255 / 0.28);
-  transition: background 0.25s ease, transform 0.25s ease;
-}
+  /* Frosted panel on a dark page (login) */
+  .glass-night {
+    background: rgb(255 255 255 / 0.06);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.8), 0 1px 0 rgb(255 255 255 / 0.08) inset;
+  }
 
-.group:hover .pill-glass {
-  background: rgb(255 255 255 / 0.3);
-}
+  /* Glass pill on images */
+  .pill-glass {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    background: rgb(255 255 255 / 0.18);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
 
-/* Light pill for use on frosted light cards */
-.pill-light {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 9999px;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-ink);
-  background: rgb(255 255 255 / 0.85);
-  border: 1px solid rgb(255 255 255 / 0.9);
-  box-shadow: 0 6px 16px -8px rgb(15 23 42 / 0.3);
+  .group:hover .pill-glass {
+    background: rgb(255 255 255 / 0.3);
+  }
+
+  /* Light pill on frosted light cards */
+  .pill-light {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    background: rgb(255 255 255 / 0.85);
+    border: 1px solid rgb(255 255 255 / 0.9);
+    box-shadow: 0 6px 16px -8px rgb(15 23 42 / 0.3);
+  }
+
+  /* Primary call to action */
+  .pill-accent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    padding: 0 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--color-accent);
+    box-shadow: 0 10px 24px -10px rgb(37 99 235 / 0.8);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .pill-accent:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+
+  /* Form fields */
+  .field {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgb(255 255 255 / 0.85);
+    background: rgb(255 255 255 / 0.8);
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    outline: none;
+  }
+
+  .field:focus {
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.25);
+  }
+
+  .field-dark {
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    background: rgb(255 255 255 / 0.08);
+    color: #fff;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    outline: none;
+  }
+
+  .field-dark::placeholder {
+    color: rgb(255 255 255 / 0.45);
+  }
+
+  .field-dark:focus {
+    border-color: rgb(96 165 250 / 0.8);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.3);
+  }
 }
 
 .cover-crypto,
@@ -182,6 +252,12 @@
 .ticker-mask {
   overflow: hidden;
   contain: inline-size;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.ticker-mask:hover .ticker-track {
+  animation-play-state: paused;
 }
 
 @keyframes ticker {
@@ -206,49 +282,4 @@
     opacity: 1;
     transform: none;
   }
-}
-
-.ticker-mask {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-
-.ticker-mask:hover .ticker-track {
-  animation-play-state: paused;
-}
-
-/* Primary call to action pill */
-.pill-accent {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  padding: 0 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #fff;
-  background: var(--color-accent);
-  box-shadow: 0 10px 24px -10px rgb(37 99 235 / 0.8);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.pill-accent:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-/* Form fields on glass */
-.field {
-  width: 100%;
-  border-radius: 1rem;
-  border: 1px solid rgb(255 255 255 / 0.85);
-  background: rgb(255 255 255 / 0.8);
-  padding: 0 1rem;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.field:focus {
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.25);
 }
