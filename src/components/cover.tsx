@@ -37,7 +37,7 @@ export function Cover({
         />
       ) : (
         <div className={`absolute inset-0 flex items-center justify-center cover-${slug}`}>
-          <svg viewBox="0 0 24 24" className="size-8 text-paper/90" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <svg viewBox="0 0 24 24" className="size-9 text-paper/40" fill="none" stroke="currentColor" strokeWidth="1.6">
             <path d={marks[slug] ?? marks.guides} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span className="sr-only">{title}</span>

@@ -1,3 +1,5 @@
+import { HeroGlass } from "@/components/hero-glass";
+import { TopPicksGlass } from "@/components/top-picks";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AffiliateLink } from "@/components/affiliate-link";
@@ -39,8 +41,8 @@ export function HomePage() {
       </section>
 
       <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,0.85fr)]">
-        <Hero posts={featured.length ? featured : data.posts.slice(0, 3)} categoryName={(post) => cat(post)?.name ?? "Story"} />
-        <TopPicks />
+        <HeroGlass posts={featured.length ? featured : data.posts.slice(0, 3)} categoryName={(post) => cat(post)?.name ?? "Story"} />
+        <TopPicksGlass />
       </section>
 
       <section aria-labelledby="dont-miss">
@@ -57,7 +59,7 @@ export function HomePage() {
               <StoryCard key={post.id} post={post} category={cat(post)} />
             ))}
           </div>
-          <aside className="rounded-2xl border border-line bg-paper p-4 shadow-sm">
+          <aside className="glass rounded-[1.75rem] p-4">
             <div className="mb-2 flex items-center justify-between">
               <h3 className="font-extrabold">Top Stories</h3>
               <Link to="/search" search={{ q: "" }} className="text-sm font-semibold text-accent">
