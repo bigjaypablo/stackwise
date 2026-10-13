@@ -216,3 +216,39 @@
 .ticker-mask:hover .ticker-track {
   animation-play-state: paused;
 }
+
+/* Primary call to action pill */
+.pill-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-accent);
+  box-shadow: 0 10px 24px -10px rgb(37 99 235 / 0.8);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.pill-accent:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Form fields on glass */
+.field {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.85);
+  background: rgb(255 255 255 / 0.8);
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.field:focus {
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.25);
+}

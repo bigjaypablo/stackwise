@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FacebookIcon, InstagramIcon, XIcon, YouTubeIcon } from "@/components/icons";
 import { Logo } from "@/components/logo";
+import { TestedSeal } from "@/components/tested-seal";
 
 const columns = [
   {
@@ -42,20 +43,28 @@ export function SiteFooter() {
   ];
 
   return (
-    <footer className="bg-ink text-paper">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="relative mt-4 overflow-hidden rounded-t-[2rem] bg-ink text-paper">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[40rem] max-w-full -translate-x-1/2 rounded-full bg-accent/30 blur-3xl"
+      />
+      <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <Logo tone="paper" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/70">
             Independent notes on crypto, AI, and SaaS tools. We test before we link.
           </p>
-          <div className="mt-4 flex gap-1">
+          <p className="glass-dark mt-4 inline-flex items-center gap-2 rounded-full py-1.5 pl-2 pr-3 text-xs font-semibold">
+            <TestedSeal className="size-4" />
+            Every pick is tested first
+          </p>
+          <div className="mt-4 flex gap-2">
             {socials.map((item) => (
               <a
                 key={item.label}
                 href="/contact"
                 aria-label={`${item.label}, placeholder`}
-                className="inline-flex size-10 items-center justify-center rounded-full text-paper/80 hover:bg-paper/10"
+                className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-paper/80 transition hover:text-paper"
               >
                 <item.icon className="size-4" />
               </a>
@@ -87,7 +96,7 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="border-t border-paper/10">
+      <div className="relative border-t border-paper/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-xs text-paper/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Stackwise. All rights reserved.</p>
           <p>Some outbound tool links are affiliate links. We may earn a commission. Scores are written before the link is added.</p>

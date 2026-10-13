@@ -8,9 +8,13 @@ export function TestedSeal({ className = "size-5" }: { className?: string }) {
   );
 }
 
-export function TestedBadge() {
+export function TestedBadge({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const look =
+    tone === "dark" ? "glass-dark text-white" : "border border-white/80 bg-white/80 text-ink shadow-sm";
   return (
-    <span className="glass-dark inline-flex items-center gap-1.5 rounded-full py-1 pl-1.5 pr-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-white">
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full py-1 pl-1.5 pr-2.5 text-[0.65rem] font-bold uppercase tracking-wider ${look}`}
+    >
       <TestedSeal className="size-4" />
       Stackwise Tested
     </span>

@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AffiliateLink } from "@/components/affiliate-link";
 import { Cover } from "@/components/cover";
 import { MarkdownBody } from "@/components/markdown-body";
+import { OurPick } from "@/components/our-pick";
+import { SectionHeading } from "@/components/section-heading";
 import { StoryCard } from "@/components/story-card";
+import { TestedBadge } from "@/components/tested-seal";
 import { TimeAgo } from "@/components/time-ago";
 import { getPostBySlug } from "@/lib/api";
 import { articleJsonLd, jsonLdScript } from "@/lib/seo";
@@ -60,38 +62,33 @@ export function PostPage({ slug }: { slug: string }) {
   return (
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(ld) }} />
-      <p className="text-xs font-bold uppercase tracking-wide text-accent">{category?.name}</p>
-      <h1 className="mt-2 max-w-3xl text-3xl font-extrabold tracking-tight sm:text-5xl">{post.title}</h1>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent">
+          {category?.name}
+        </span>
+        {post.isTest ? <TestedBadge tone="light" /> : null}
+      </div>
+      <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight sm:text-5xl">{post.title}</h1>
       <p className="mt-4 text-sm text-ink/65">
         {post.authorName} · <TimeAgo iso={post.publishedAt || post.updatedAt} /> · {post.readMinutes} min read
       </p>
-      <Cover title={post.title} url={post.coverUrl} category={category} className="mt-6 aspect-[16/8] w-full rounded-3xl" />
-      <p className="mt-6 max-w-3xl text-lg text-ink/80">{post.summary}</p>
-      <div className="mt-2 max-w-3xl">
-        <MarkdownBody source={post.body} affiliates={data.affiliates} />
+      <Cover
+        title={post.title}
+        url={post.coverUrl}
+        category={category}
+        className="mt-6 aspect-[16/8] w-full rounded-[1.75rem] border border-white/70 shadow-glass"
+      />
+      <div className="mt-6 max-w-3xl rounded-[1.75rem] border border-white bg-white/80 p-5 shadow-glass sm:p-8">
+        <p className="text-lg text-ink/80">{post.summary}</p>
+        <div className="mt-2">
+          <MarkdownBody source={post.body} affiliates={data.affiliates} />
+        </div>
       </div>
-      {affiliate ? (
-        <aside className="mt-8 max-w-3xl rounded-3xl bg-ink p-5 text-paper sm:p-6">
-          <p className="text-xs font-bold uppercase tracking-wide text-accent">Our pick</p>
-          <h2 className="mt-2 text-2xl font-extrabold">{affiliate.name}</h2>
-          <p className="mt-2 max-w-xl text-sm text-paper/75">
-            If you use this link, Stackwise may earn a commission. It does not change what we wrote, and you should still read the notes above.
-          </p>
-          <AffiliateLink
-            affiliate={affiliate}
-            className="mt-4 inline-flex h-11 items-center rounded-full bg-accent px-4 text-sm font-semibold text-paper"
-          >
-            Visit {affiliate.name}
-          </AffiliateLink>
-          <p className="mt-3 text-xs text-paper/50">Contains affiliate links</p>
-        </aside>
-      ) : null}
+      {affiliate ? <OurPick affiliate={affiliate} /> : null}
       {related.length ? (
         <section className="mt-10" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="text-xl font-extrabold">
-            Related
-          </h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <SectionHeading id="related-heading" title="Related" />
+          <div className="grid gap-3 sm:grid-cols-3">
             {related.map((item) => (
               <StoryCard key={item.id} post={item} category={categoryById(data.categories, item.categoryId)} />
             ))}
