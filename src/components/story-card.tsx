@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import { AuthorChip } from "@/components/author-chip";
 import { Cover } from "@/components/cover";
+import { PostChips } from "@/components/post-chips";
 import { TimeAgo } from "@/components/time-ago";
 import type { Category, Post } from "@/lib/types";
 
@@ -60,6 +62,10 @@ export function StoryCard({
 
       <Link to="/post/$slug" params={{ slug: post.slug }} aria-label={post.title} className="absolute inset-0 z-10" />
 
+      <div className="pointer-events-none absolute left-3 top-3 z-20 sm:left-4 sm:top-4">
+        <PostChips post={post} category={category} />
+      </div>
+
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-4 sm:p-5">
         {category ? (
           <span className="glass-dark inline-block rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-white">
@@ -71,10 +77,12 @@ export function StoryCard({
         </h3>
         {large ? <p className="mt-2 line-clamp-2 text-sm text-white/75">{post.summary}</p> : null}
         <div className="mt-3 flex items-center justify-between gap-3">
-          <p className="text-xs text-white/65">
-            <TimeAgo iso={post.publishedAt} />
-          </p>
-          <span className="pill-glass" aria-hidden="true">
+          <AuthorChip
+            name={post.authorName}
+            date={post.publishedAt || post.updatedAt}
+            minutes={large ? post.readMinutes : undefined}
+          />
+          <span className="pill-glass shrink-0" aria-hidden="true">
             Read <ArrowIcon />
           </span>
         </div>

@@ -57,7 +57,7 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
         </Link>
         <form
           role="search"
-          className="order-3 flex w-full items-center rounded-full border border-white/80 bg-white/70 sm:order-none sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
+          className="order-3 flex w-full items-center rounded-full border border-ink/10 bg-white/80 sm:order-none sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
           onSubmit={(event) => {
             event.preventDefault();
             navigate({ to: "/search", search: { q: query } });

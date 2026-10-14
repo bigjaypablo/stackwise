@@ -1,11 +1,14 @@
-import { categorySlug } from "@/lib/category-slug";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { AuthorChip } from "@/components/author-chip";
 import { Cover } from "@/components/cover";
+import { HeroRail } from "@/components/hero-rail";
 import { ArrowIcon } from "@/components/icons";
-import { TestedBadge } from "@/components/tested-seal";
+import { PostChips } from "@/components/post-chips";
+import { coverCategory } from "@/lib/category-slug";
 import type { Post } from "@/lib/types";
 
+const SLIDE_MS = 7000;
 
 export function HeroGlass({
   posts,
@@ -14,15 +17,16 @@ export function HeroGlass({
   posts: Post[];
   categoryName: (post: Post) => string;
 }) {
+  const items = posts.slice(0, 4);
   const [index, setIndex] = useState(0);
-  const post = posts[index] ?? posts[0];
+  const post = items[index] ?? items[0];
 
   useEffect(() => {
-    if (posts.length < 2) return;
+    if (items.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setIndex((value) => (value + 1) % posts.length), 7000);
-    return () => window.clearInterval(timer);
-  }, [posts.length]);
+    const timer = window.setTimeout(() => setIndex((value) => (value + 1) % items.length), SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [index, items.length]);
 
   if (!post) {
     return (
@@ -33,50 +37,39 @@ export function HeroGlass({
   }
 
   const name = categoryName(post);
+  const category = coverCategory(name);
 
   return (
-    <article className="group relative isolate min-h-[26rem] overflow-hidden rounded-[1.75rem] border border-white/70 bg-ink text-white shadow-glass">
+    <article className="group relative isolate min-h-[40rem] sm:min-h-[34rem] overflow-hidden rounded-[1.75rem] border border-white/70 bg-ink text-white shadow-glass">
       <div key={post.id} className="fade-in absolute inset-0">
-        <Cover
-          title={post.title}
-          priority
-          url={post.coverUrl}
-          category={{ id: "", slug: categorySlug(name), name, description: "" }}
-          className="h-full w-full"
-        />
+        <Cover title={post.title} url={post.coverUrl} category={category} className="h-full w-full" priority />
       </div>
-      <div className="absolute inset-0 bg-linear-to-t from-slate-950/95 via-slate-950/45 to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.78)_50%,transparent_80%)]" />
 
-      <div className="relative flex h-full min-h-[26rem] flex-col justify-end p-5 sm:p-8">
+      <div className="relative flex h-full min-h-[40rem] sm:min-h-[34rem] flex-col justify-end p-5 [text-shadow:0_1px_14px_rgb(0_0_0/0.6)] sm:p-8">
         <div className="flex flex-wrap items-center gap-2">
           <span className="glass-dark rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider">{name}</span>
-          {post.isTest ? <TestedBadge /> : null}
+          <PostChips post={post} category={category} />
         </div>
         <h1 className="mt-3 max-w-xl text-3xl font-extrabold tracking-tight sm:text-4xl">
           <Link to="/post/$slug" params={{ slug: post.slug }} className="hover:underline">
             {post.title}
           </Link>
         </h1>
-        <p className="mt-3 max-w-xl text-sm text-white/80 sm:text-base">{post.summary}</p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Link to="/post/$slug" params={{ slug: post.slug }} className="pill-light h-11 px-5">
+        <p className="mt-3 line-clamp-2 max-w-xl text-sm text-white/80 sm:text-base">{post.summary}</p>
+        <AuthorChip
+          name={post.authorName}
+          date={post.publishedAt || post.updatedAt}
+          minutes={post.readMinutes}
+          className="mt-4"
+        />
+        <div className="mt-4">
+          <Link to="/post/$slug" params={{ slug: post.slug }} className="pill-light h-11 bg-white px-5">
             Read Full Story
             <ArrowIcon className="size-4" />
           </Link>
-          <div className="glass-dark flex items-center gap-2 rounded-full px-3 py-2.5" role="tablist" aria-label="Featured stories">
-            {posts.map((item, dot) => (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                aria-selected={dot === index}
-                aria-label={`Show featured story ${dot + 1}: ${item.title}`}
-                className={`h-2 rounded-full transition-all ${dot === index ? "w-6 bg-white" : "w-2 bg-white/45"}`}
-                onClick={() => setIndex(dot)}
-              />
-            ))}
-          </div>
         </div>
+        <HeroRail posts={items} active={index} onSelect={setIndex} categoryName={categoryName} />
       </div>
     </article>
   );

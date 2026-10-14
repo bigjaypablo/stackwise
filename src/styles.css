@@ -283,3 +283,23 @@
     transform: none;
   }
 }
+
+.rail-progress {
+  transform-origin: left;
+  animation: rail-progress 7s linear forwards;
+}
+
+@keyframes rail-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-progress {
+    display: none;
+  }
+}

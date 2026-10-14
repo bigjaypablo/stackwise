@@ -1,14 +1,6 @@
+import { AuthorAvatar } from "@/components/author-avatar";
 import { XIcon } from "@/components/icons";
 import { OWNER, X_FOLLOW_URL } from "@/lib/site";
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .map((part) => part.charAt(0))
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export function AuthorCard() {
   return (
@@ -18,13 +10,7 @@ export function AuthorCard() {
       aria-labelledby="author-title"
     >
       <div className="flex items-start gap-4">
-        {OWNER.avatarUrl ? (
-          <img src={OWNER.avatarUrl} alt="" className="size-14 shrink-0 rounded-full object-cover" />
-        ) : (
-          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-linear-to-br from-ink to-accent text-lg font-extrabold text-white">
-            {initials(OWNER.name)}
-          </span>
-        )}
+        <AuthorAvatar name={OWNER.name} className="size-14 text-lg" />
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-wider text-accent">Behind Stackwise</p>
           <h2 id="author-title" className="text-lg font-extrabold">

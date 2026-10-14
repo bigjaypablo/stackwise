@@ -24,7 +24,7 @@ export const Route = createRootRoute({
       <head>
         <HeadContent />
       </head>
-      <body className="bg-paper font-sans text-ink">
+      <body className="font-sans text-ink">
         <Outlet />
         <Scripts />
       </body>
