@@ -52,22 +52,22 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
       </div>
 
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
+        <Link to="/" aria-label="Stackwise home" className="order-1 mr-auto">
+          <Logo />
+        </Link>
         <button
           type="button"
           aria-label="Open menu"
           aria-expanded={open}
           aria-controls="mobile-sections"
           onClick={() => setOpen(true)}
-          className="-ml-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition hover:bg-ink/5 md:hidden"
+          className="order-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition hover:bg-ink/5 sm:order-4 md:hidden"
         >
           <MenuIcon className="size-6" />
         </button>
-        <Link to="/" aria-label="Stackwise home" className="mr-auto">
-          <Logo />
-        </Link>
         <form
           role="search"
-          className="order-3 flex w-full items-center rounded-full border border-ink/10 bg-white/80 sm:order-none sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
+          className="order-3 flex w-full items-center rounded-full border border-ink/10 bg-white/80 sm:order-2 sm:w-auto sm:min-w-72 sm:flex-1 lg:max-w-xl"
           onSubmit={(event) => {
             event.preventDefault();
             navigate({ to: "/search", search: { q: query } });
@@ -87,7 +87,7 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
             <SearchIcon className="size-5" />
           </button>
         </form>
-        <Link to="/" hash="newsletter" className="pill-accent">
+        <Link to="/" hash="newsletter" className="pill-accent hidden sm:order-3 sm:inline-flex">
           Subscribe
         </Link>
       </div>
