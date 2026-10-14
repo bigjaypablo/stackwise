@@ -1,7 +1,6 @@
-import { MobileChips } from "@/components/mobile-chips";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { CloseIcon, MenuIcon, SearchIcon } from "@/components/icons";
+import { MenuIcon, SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { MobileMenu } from "@/components/mobile-menu";
 import { Socials } from "@/components/socials";
@@ -53,6 +52,16 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
       </div>
 
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
+        <button
+          type="button"
+          aria-label="Open menu"
+          aria-expanded={open}
+          aria-controls="mobile-sections"
+          onClick={() => setOpen(true)}
+          className="-ml-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition hover:bg-ink/5 md:hidden"
+        >
+          <MenuIcon className="size-6" />
+        </button>
         <Link to="/" aria-label="Stackwise home" className="mr-auto">
           <Logo />
         </Link>
@@ -83,44 +92,32 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
         </Link>
       </div>
 
-      <nav aria-label="Sections" className="relative mx-auto max-w-7xl px-4">
-        <div className="relative z-50 flex items-center gap-2 border-t border-ink/10">
-          <button
-            type="button"
-            className="inline-flex h-11 items-center gap-2 pr-3 text-sm font-semibold md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-sections"
-            onClick={() => setOpen((value) => !value)}
-          >
-            {open ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
-            <span>{open ? "Close" : "Menu"}</span>
-          </button>
-          <MobileChips />
-          <ul className="no-scrollbar hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto md:flex">
-            {NAV.map((item) =>
-              item.to === "/" ? (
-                <li key={item.label}>
-                  <Link to="/" activeOptions={{ exact: true }} className={DESKTOP_LINK} activeProps={{ className: DESKTOP_ACTIVE }}>
-                    {item.label}
-                  </Link>
-                </li>
-              ) : (
-                <li key={item.label}>
-                  <Link
-                    to="/category/$slug"
-                    params={{ slug: item.slug }}
-                    className={DESKTOP_LINK}
-                    activeProps={{ className: DESKTOP_ACTIVE }}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ),
-            )}
-          </ul>
-        </div>
-        <MobileMenu open={open} onClose={close} />
+      <nav aria-label="Sections" className="mx-auto hidden max-w-7xl px-4 md:block">
+        <ul className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto border-t border-ink/10">
+          {NAV.map((item) =>
+            item.to === "/" ? (
+              <li key={item.label}>
+                <Link to="/" activeOptions={{ exact: true }} className={DESKTOP_LINK} activeProps={{ className: DESKTOP_ACTIVE }}>
+                  {item.label}
+                </Link>
+              </li>
+            ) : (
+              <li key={item.label}>
+                <Link
+                  to="/category/$slug"
+                  params={{ slug: item.slug }}
+                  className={DESKTOP_LINK}
+                  activeProps={{ className: DESKTOP_ACTIVE }}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ),
+          )}
+        </ul>
       </nav>
+
+      <MobileMenu open={open} onClose={close} />
     </header>
   );
 }
