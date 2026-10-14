@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { FacebookIcon, InstagramIcon, XIcon, YouTubeIcon } from "@/components/icons";
 import { Logo } from "@/components/logo";
+import { Socials } from "@/components/socials";
 import { TestedSeal } from "@/components/tested-seal";
 
 const columns = [
@@ -35,12 +35,6 @@ const columns = [
 
 export function SiteFooter() {
   const year = new Date().getUTCFullYear();
-  const socials = [
-    { label: "Facebook", icon: FacebookIcon },
-    { label: "X", icon: XIcon },
-    { label: "Instagram", icon: InstagramIcon },
-    { label: "YouTube", icon: YouTubeIcon },
-  ];
 
   return (
     <footer className="relative mt-4 overflow-hidden rounded-t-[2rem] bg-ink text-paper">
@@ -58,18 +52,7 @@ export function SiteFooter() {
             <TestedSeal className="size-4" />
             Every pick is tested first
           </p>
-          <div className="mt-4 flex gap-2">
-            {socials.map((item) => (
-              <a
-                key={item.label}
-                href="/contact"
-                aria-label={`${item.label}, placeholder`}
-                className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-paper/80 transition hover:text-paper"
-              >
-                <item.icon className="size-4" />
-              </a>
-            ))}
-          </div>
+          <Socials tone="dark" className="mt-4" />
         </div>
         {columns.map((column) => (
           <div key={column.title}>

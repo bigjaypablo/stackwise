@@ -62,7 +62,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
           )}
         </ul>
         <div className="flex items-center justify-between border-t border-ink/10 bg-mist px-5 py-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-ink/50">Follow Stackwise</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink/50">Follow</span>
           <Socials />
         </div>
       </div>

@@ -1,3 +1,6 @@
+import { FollowBar } from "@/components/follow-bar";
+import { AuthorCard } from "@/components/author-card";
+import { ShareVerdict } from "@/components/share-verdict";
 import { CommentSection } from "@/components/comment-section";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -85,7 +88,10 @@ export function PostPage({ slug }: { slug: string }) {
           <MarkdownBody source={post.body} affiliates={data.affiliates} />
         </div>
       </div>
+      <ShareVerdict title={post.title} summary={post.summary} slug={post.slug} isTest={Boolean(post.isTest)} />
       {affiliate ? <OurPick affiliate={affiliate} /> : null}
+      <AuthorCard />
+      <FollowBar />
       <CommentSection slug={post.slug} />
       {related.length ? (
         <section className="mt-10" aria-labelledby="related-heading">
