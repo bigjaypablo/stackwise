@@ -20,6 +20,7 @@ import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
 import { Route as PublicSearchRouteImport } from './routes/_public/search'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAffiliatesRouteImport } from './routes/admin/affiliates'
+import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminSubscribersRouteImport } from './routes/admin/subscribers'
 import { Route as AdminTeamRouteImport } from './routes/admin/team'
@@ -84,6 +85,11 @@ const AdminAffiliatesRoute = AdminAffiliatesRouteImport.update({
   path: '/affiliates',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminCommentsRoute = AdminCommentsRouteImport.update({
+  id: '/comments',
+  path: '/comments',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PublicPrivacyRoute
   '/search': typeof PublicSearchRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
+  '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PublicPrivacyRoute
   '/search': typeof PublicSearchRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
+  '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/_public/privacy': typeof PublicPrivacyRoute
   '/_public/search': typeof PublicSearchRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
+  '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/search'
     | '/admin/affiliates'
+    | '/admin/comments'
     | '/admin/login'
     | '/admin/subscribers'
     | '/admin/team'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/search'
     | '/admin/affiliates'
+    | '/admin/comments'
     | '/admin/login'
     | '/admin/subscribers'
     | '/admin/team'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/_public/privacy'
     | '/_public/search'
     | '/admin/affiliates'
+    | '/admin/comments'
     | '/admin/login'
     | '/admin/subscribers'
     | '/admin/team'
@@ -333,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAffiliatesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/comments': {
+      id: '/admin/comments'
+      path: '/comments'
+      fullPath: '/admin/comments'
+      preLoaderRoute: typeof AdminCommentsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -422,6 +441,7 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminAffiliatesRoute: typeof AdminAffiliatesRoute
+  AdminCommentsRoute: typeof AdminCommentsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminTeamRoute: typeof AdminTeamRoute
@@ -433,6 +453,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAffiliatesRoute: AdminAffiliatesRoute,
+  AdminCommentsRoute: AdminCommentsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminTeamRoute: AdminTeamRoute,

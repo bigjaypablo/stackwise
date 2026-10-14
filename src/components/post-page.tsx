@@ -1,3 +1,5 @@
+import { CommentSection } from "@/components/comment-section";
+import { CommentSection } from "@/components/comment-section";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Cover } from "@/components/cover";
@@ -85,6 +87,8 @@ export function PostPage({ slug }: { slug: string }) {
         </div>
       </div>
       {affiliate ? <OurPick affiliate={affiliate} /> : null}
+      <CommentSection slug={post.slug} />
+      <CommentSection slug={post.slug} />
       {related.length ? (
         <section className="mt-10" aria-labelledby="related-heading">
           <SectionHeading id="related-heading" title="Related" />
