@@ -1,3 +1,4 @@
+import { MobileChips } from "@/components/mobile-chips";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon, MenuIcon, SearchIcon } from "@/components/icons";
@@ -94,6 +95,7 @@ export function SiteHeader({ trending }: { trending: Post[] }) {
             {open ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
             <span>{open ? "Close" : "Menu"}</span>
           </button>
+          <MobileChips />
           <ul className="no-scrollbar hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto md:flex">
             {NAV.map((item) =>
               item.to === "/" ? (
