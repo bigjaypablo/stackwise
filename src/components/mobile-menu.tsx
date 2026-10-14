@@ -7,9 +7,9 @@ import { NAV } from "@/lib/nav";
 import { OWNER } from "@/lib/site";
 
 const PRIMARY =
-  "menu-item group flex items-center justify-between border-b border-white/10 py-3.5 text-[1.7rem] font-extrabold leading-none tracking-tight text-white/90 transition hover:text-white data-[status=active]:text-blue-400";
-const SECONDARY = "text-[0.95rem] text-white/70 transition hover:text-white";
-const LABEL = "font-mono text-[0.68rem] uppercase tracking-[0.22em] text-white/45";
+  "menu-item group flex items-center justify-between border-b border-ink/10 py-3.5 text-[1.7rem] font-extrabold leading-none tracking-tight text-ink/90 transition hover:text-accent data-[status=active]:text-accent";
+const SECONDARY = "text-[0.95rem] text-ink/65 transition hover:text-ink";
+const LABEL = "font-mono text-[0.68rem] uppercase tracking-[0.22em] text-ink/45";
 
 export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
@@ -34,23 +34,27 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       role="dialog"
       aria-modal="true"
       aria-label="Menu"
-      className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-ink text-white md:hidden"
+      className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-haze text-ink md:hidden"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-24 -top-28 size-80 rounded-full bg-accent/30 blur-3xl"
+        className="pointer-events-none absolute -left-24 -top-28 size-80 rounded-full bg-accent/15 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-32 -right-24 size-80 rounded-full bg-indigo-300/30 blur-3xl"
       />
 
-      <div className="relative flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-5">
+      <div className="relative flex h-16 shrink-0 items-center justify-between border-b border-ink/10 px-5">
         <Link to="/" aria-label="Stackwise home" onClick={onClose}>
-          <Logo tone="paper" />
+          <Logo />
         </Link>
         <button
           type="button"
           autoFocus
           aria-label="Close menu"
           onClick={onClose}
-          className="inline-flex size-10 items-center justify-center rounded-full border border-white/25 transition hover:bg-white/10"
+          className="inline-flex size-10 items-center justify-center rounded-full border border-ink/20 transition hover:bg-ink/5"
         >
           <CloseIcon className="size-5" />
         </button>
@@ -64,7 +68,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
                 {item.to === "/" ? (
                   <Link to="/" activeOptions={{ exact: true }} onClick={onClose} className={PRIMARY}>
                     {item.label}
-                    <ArrowIcon className="size-5 text-white/30 transition group-hover:text-white" />
+                    <ArrowIcon className="size-5 text-ink/25 transition group-hover:text-accent" />
                   </Link>
                 ) : (
                   <Link
@@ -74,7 +78,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
                     className={PRIMARY}
                   >
                     {item.label}
-                    <ArrowIcon className="size-5 text-white/30 transition group-hover:text-white" />
+                    <ArrowIcon className="size-5 text-ink/25 transition group-hover:text-accent" />
                   </Link>
                 )}
               </li>
@@ -120,14 +124,14 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
             Follow
           </h2>
           <div className="mt-4 flex items-center gap-3">
-            <Socials tone="outline" size="lg" />
-            <p className="text-sm text-white/60">@{OWNER.handle}</p>
+            <Socials tone="line" size="lg" />
+            <p className="text-sm text-ink/60">@{OWNER.handle}</p>
           </div>
         </section>
       </div>
 
-      <div className="relative flex shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-ink px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
-        <p className="min-w-0 text-sm font-semibold leading-snug text-white/85">Tools tested before you pay.</p>
+      <div className="relative flex shrink-0 items-center justify-between gap-3 border-t border-ink/10 bg-white/80 px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl">
+        <p className="min-w-0 text-sm font-semibold leading-snug text-ink/85">Tools tested before you pay.</p>
         <Link to="/" hash="newsletter" onClick={onClose} className="pill-accent shrink-0">
           Subscribe
         </Link>

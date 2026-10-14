@@ -12,6 +12,7 @@ const TONES = {
   light: "text-ink/70 hover:bg-ink/5 hover:text-ink",
   dark: "glass-dark text-white/80 hover:text-white",
   outline: "border border-white/25 text-white hover:bg-white/10",
+  line: "border border-ink/20 text-ink hover:bg-ink/5",
 };
 
 export function Socials({
@@ -20,7 +21,7 @@ export function Socials({
   size = "md",
 }: {
   className?: string;
-  tone?: "light" | "dark" | "outline";
+  tone?: "light" | "dark" | "outline" | "line";
   size?: "md" | "lg";
 }) {
   const items = SOCIALS.filter((item) => item.href);
