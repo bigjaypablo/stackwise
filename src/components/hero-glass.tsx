@@ -39,6 +39,7 @@ export function HeroGlass({
       <div key={post.id} className="fade-in absolute inset-0">
         <Cover
           title={post.title}
+          priority
           url={post.coverUrl}
           category={{ id: "", slug: categorySlug(name), name, description: "" }}
           className="h-full w-full"

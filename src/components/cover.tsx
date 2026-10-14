@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { COVER_COUNTS } from "@/lib/cover-pool";
 import type { Category } from "@/lib/types";
 
 const marks: Record<string, string> = {
@@ -11,27 +12,40 @@ const marks: Record<string, string> = {
   deals: "M5 8h14v4a2 2 0 0 1 0 4v1H5v-1a2 2 0 0 1 0-4V8z",
 };
 
+function defaultCover(slug: string, title: string): string | undefined {
+  const count = COVER_COUNTS[slug] ?? 0;
+  if (!count) return undefined;
+  let hash = 0;
+  for (let i = 0; i < title.length; i += 1) hash = (hash * 31 + title.charCodeAt(i)) >>> 0;
+  return `/images/covers/${slug}-${(hash % count) + 1}.jpg`;
+}
+
 export function Cover({
   category,
   title,
   url,
   className = "",
+  priority = false,
 }: {
   category?: Category;
   title: string;
   url?: string;
   className?: string;
+  priority?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const slug = category?.slug ?? "guides";
-  const showImage = Boolean(url) && !failed;
+  const src = url || defaultCover(slug, title);
+  const showImage = Boolean(src) && !failed;
 
   return (
     <div className={`relative overflow-hidden ${className}`} aria-hidden={showImage ? undefined : true}>
       {showImage ? (
         <img
-          src={url}
+          src={src}
           alt=""
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           onError={() => setFailed(true)}
         />
