@@ -32,3 +32,8 @@ create policy "editors moderate comments" on public.comments
 create policy "editors delete comments" on public.comments
   for delete to authenticated
   using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role in ('admin', 'editor')));
+
+-- Data API access. New Supabase projects expose nothing by default.
+grant execute on function public.current_role(), public.is_admin(), public.is_editor_or_admin() to anon, authenticated;
+grant select, insert on public.comments to anon;
+grant select, insert, update, delete on public.comments to authenticated;
