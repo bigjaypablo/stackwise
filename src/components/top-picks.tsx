@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { AffiliateLink } from "@/components/affiliate-link";
-import { ResearchMark } from "@/components/research-mark";
 import { affiliateById, usePublicData } from "@/lib/use-public";
 
 function PlusIcon() {
@@ -18,7 +17,7 @@ export function TopPicksGlass() {
   return (
     <aside className="glass flex flex-col rounded-[1.75rem] p-4 sm:p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-lg font-extrabold tracking-tight">Top Picks</h2>
+        <h2 className="text-lg font-extrabold tracking-tight">Featured tools</h2>
         <Link to="/category/$slug" params={{ slug: "reviews" }} className="text-sm font-semibold text-accent">
           View all
         </Link>
@@ -35,16 +34,8 @@ export function TopPicksGlass() {
                 {tool.name.charAt(0)}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-1.5 truncate font-semibold">
-                  <span className="truncate">{tool.name}</span>
-                  <ResearchMark className="size-4 shrink-0" />
-                </p>
-                <p className="mt-0.5 flex items-center gap-2 truncate text-xs text-ink/60">
-                  <span className="rounded-full bg-ink px-2 py-0.5 font-bold tabular-nums text-white">
-                    {tool.rating.toFixed(1)}
-                  </span>
-                  {tool.category}
-                </p>
+                <p className="truncate font-semibold">{tool.name}</p>
+                <p className="mt-0.5 truncate text-xs text-ink/60">{tool.category}</p>
               </div>
               {affiliate ? (
                 <AffiliateLink affiliate={affiliate} className="pill-light shrink-0">
@@ -55,7 +46,7 @@ export function TopPicksGlass() {
           );
         })}
       </ol>
-      <p className="pt-3 text-xs text-ink/50">Contains affiliate links</p>
+      <p className="pt-3 text-xs text-ink/50">Contains affiliate links. Do your own research.</p>
     </aside>
   );
 }

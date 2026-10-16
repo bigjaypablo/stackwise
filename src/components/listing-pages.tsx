@@ -80,25 +80,6 @@ export function SearchPage({ query }: { query: string }) {
   );
 }
 
-export function AboutPage() {
-  return (
-    <GlassPanel className="mx-auto max-w-3xl p-6 sm:p-8">
-      <PageHeading title="About Stackwise" description="Tools tested before you pay." />
-      <div className="mt-6 space-y-4 leading-relaxed text-ink/85">
-        <p>
-          Stackwise writes about crypto wallets, AI tools, and the SaaS a small team might actually keep. The tone is a review desk, not a launch calendar.
-        </p>
-        <p>
-          A product earns a link after someone on the desk has used it for the job it claims to do. Placeholder stories in this demo are marked in the article itself. They are not live test results.
-        </p>
-        <p>
-          Affiliate links, when they appear, are labeled and stored in one list. The score is written before the link is attached. If a tool is bad, the link does not rescue it.
-        </p>
-      </div>
-    </GlassPanel>
-  );
-}
-
 export function ContactPage() {
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
@@ -153,40 +134,6 @@ export function ContactPage() {
   );
 }
 
-export function DisclosurePage() {
-  return (
-    <GlassPanel className="mx-auto max-w-3xl p-6 sm:p-8">
-      <PageHeading title="Affiliate disclosure" />
-      <div className="mt-5 space-y-4 leading-relaxed text-ink/85">
-        <p>
-          Some links to tools are affiliate links. If you choose to visit or buy through one, Stackwise may earn a commission. You do not pay extra because of that.
-        </p>
-        <p>
-          Those links are kept in a single affiliate list and rendered with <code>rel="sponsored nofollow noopener"</code>. Editorial notes are written before a link is added. A commission is not a score.
-        </p>
-        <p>Placeholder links in the demo point at example.com. Replace them in the admin desk before a real launch.</p>
-      </div>
-    </GlassPanel>
-  );
-}
-
-export function PrivacyPage() {
-  return (
-    <GlassPanel className="mx-auto max-w-3xl p-6 sm:p-8">
-      <PageHeading title="Privacy" />
-      <div className="mt-5 space-y-4 leading-relaxed text-ink/85">
-        <p>
-          In demo mode, stories, subscriber emails, and desk logins stay in this browser's local storage. Nothing is sent to Stackwise. Clearing site data deletes it.
-        </p>
-        <p>
-          If you connect Supabase, account email and role live in your Supabase project, and newsletter addresses live in the subscribers table. The public site only reads published stories, tools, and affiliate links.
-        </p>
-        <p>The contact form does not save a copy. It opens your email app. Do not send passwords or seed phrases.</p>
-      </div>
-    </GlassPanel>
-  );
-}
-
 export function NotFoundPage() {
   return (
     <div className="py-16 text-center">
@@ -199,3 +146,5 @@ export function NotFoundPage() {
     </div>
   );
 }
+
+export { AboutPage, DisclosurePage, PrivacyPage } from "@/components/static-pages";
