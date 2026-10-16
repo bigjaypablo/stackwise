@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL, OWNER, X_PROFILE_URL } from "@/lib/site";
 import { GlassPanel } from "@/components/glass-panel";
 import { PageHeading } from "@/components/page-heading";
 
@@ -116,6 +117,30 @@ export function PrivacyPage() {
           recovery phrases or private keys to anyone, including us.
         </p>
       </Block>
+    </GlassPanel>
+  );
+}
+
+export function ContactPage() {
+  return (
+    <GlassPanel className="mx-auto max-w-xl p-6 sm:p-8">
+      <PageHeading title="Contact" />
+      <div className="mt-4 space-y-3 leading-relaxed text-ink/85">
+        {CONTACT_EMAIL ? (
+          <p>
+            Email <a className="font-semibold text-accent" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          </p>
+        ) : (
+          <p>
+            Email contact is coming soon. For now, message{" "}
+            <a className="font-semibold text-accent" href={X_PROFILE_URL} target="_blank" rel="noopener noreferrer">
+              @{OWNER.handle}
+            </a>{" "}
+            on X.
+          </p>
+        )}
+        <p className="text-sm text-ink/65">Never send passwords, recovery phrases or private keys to anyone, including us.</p>
+      </div>
     </GlassPanel>
   );
 }

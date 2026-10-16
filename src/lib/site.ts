@@ -46,3 +46,6 @@ export function tweetIntent(text: string, url: string): string {
   const params = new URLSearchParams({ text, url, via: OWNER.handle });
   return `https://x.com/intent/tweet?${params.toString()}`;
 }
+
+/** Set this when the Stackwise email exists. While empty, the contact page points to X. */
+export const CONTACT_EMAIL = "";

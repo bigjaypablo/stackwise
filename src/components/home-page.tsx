@@ -8,81 +8,104 @@ import { TopStories } from "@/components/top-stories";
 import { categoryById, usePublicData } from "@/lib/use-public";
 import type { Post } from "@/lib/types";
 
-function bySlug(posts: Post[], slug: string) {
-  return posts.find((post) => post.slug === slug);
-}
-
 export function HomePage() {
   const data = usePublicData();
   const cat = (post?: Post) => (post ? categoryById(data.categories, post.categoryId) : undefined);
 
-  const featured = data.posts.filter((post) => post.featured);
-  const quick = data.posts.filter((post) => !post.featured).slice(0, 4);
-  const lead = bySlug(data.posts, "how-we-test-wallets") ?? data.posts[0];
-  const small = [
-    "notion-ai-alternatives",
-    "annual-plans-worth-it",
-    "self-custody-first-week",
-    "issue-trackers-six-person-team",
-  ]
-    .map((slug) => bySlug(data.posts, slug))
-    .filter((post): post is Post => Boolean(post));
-  const stories = data.posts.slice(0, 5);
-  const tests = data.posts.filter((post) => post.isTest);
-  const mainTest = tests[0];
-  const sideTests = tests.slice(1, 4);
+  const posts = [...data.posts].sort((a, b) =>
+    (b.publishedAt || b.createdAt).localeCompare(a.publishedAt || a.createdAt),
+  );
+
+  if (posts.length === 0) {
+    return (
+      <div className="space-y-8">
+        <section className="glass rounded-[1.75rem] px-6 py-12 text-center">
+          <p className="text-xs font-bold uppercase tracking-wider text-accent">Coming soon</p>
+          <h1 className="mx-auto mt-2 max-w-xl text-3xl font-extrabold tracking-tight">
+            The first Stackwise research is on the way
+          </h1>
+          <p className="mx-auto mt-3 max-w-lg text-ink/70">
+            Plain-English research on crypto, AI and SaaS tools. Subscribe below and the first posts will land in your inbox.
+          </p>
+        </section>
+        <Newsletter />
+      </div>
+    );
+  }
+
+  const featured = posts.filter((post) => post.featured);
+  const heroPosts = (featured.length ? featured : posts).slice(0, 4);
+  const heroIds = new Set(heroPosts.map((post) => post.id));
+  const rest = posts.filter((post) => !heroIds.has(post.id));
+  const quick = posts.filter((post) => post.id !== heroPosts[0]?.id).slice(0, 4);
+  const [lead, ...others] = rest;
+  const small = others.slice(0, 4);
+  const richLayout = rest.length >= 5;
+  const tests = posts.filter((post) => post.isTest);
+  const [mainTest, ...moreTests] = tests;
+  const sideTests = moreTests.slice(0, 3);
+  const hasTools = data.tools.length > 0;
 
   return (
     <div className="space-y-8">
-      <section aria-label="Latest stories">
-        <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-          {quick.map((post) => (
-            <StoryCard key={post.id} post={post} category={cat(post)} size="mini" />
-          ))}
-        </div>
+      {quick.length >= 3 ? (
+        <section aria-label="Latest stories">
+          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
+            {quick.map((post) => (
+              <StoryCard key={post.id} post={post} category={cat(post)} size="mini" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section
+        className={`grid items-stretch gap-4 ${hasTools ? "lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,0.85fr)]" : ""}`}
+      >
+        <HeroGlass posts={heroPosts} categoryName={(post) => cat(post)?.name ?? "Story"} />
+        {hasTools ? <TopPicksGlass /> : null}
       </section>
 
-      <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,0.85fr)]">
-        <HeroGlass
-          posts={featured.length ? featured : data.posts.slice(0, 3)}
-          categoryName={(post) => cat(post)?.name ?? "Story"}
-        />
-        <TopPicksGlass />
-      </section>
+      {richLayout && lead ? (
+        <section aria-labelledby="dont-miss">
+          <SectionHeading id="dont-miss" title="Don't Miss" />
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_18rem]">
+            <div className="[&>article]:h-full">
+              <StoryCard post={lead} category={cat(lead)} size="large" className="lg:aspect-auto lg:min-h-[26rem]" />
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-rows-2">
+              {small.map((post) => (
+                <StoryCard key={post.id} post={post} category={cat(post)} className="lg:aspect-auto" />
+              ))}
+            </div>
+            <TopStories posts={posts.slice(0, 5)} />
+          </div>
+        </section>
+      ) : rest.length > 0 ? (
+        <section aria-labelledby="latest">
+          <SectionHeading id="latest" title="Latest" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((post) => (
+              <StoryCard key={post.id} post={post} category={cat(post)} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-      <section aria-labelledby="dont-miss">
-        <SectionHeading id="dont-miss" title="Don't Miss" />
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_18rem]">
-          <div className="[&>article]:h-full">
-            {lead ? (
-              <StoryCard
-                post={lead}
-                category={cat(lead)}
-                size="large"
-                className="lg:aspect-auto lg:min-h-[26rem]"
-              />
+      {mainTest ? (
+        <section aria-labelledby="latest-research">
+          <SectionHeading id="latest-research" title="Latest Research" viewAllSlug="reviews" />
+          <div className={`grid gap-4 ${sideTests.length ? "lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" : ""}`}>
+            <TestCard post={mainTest} large categoryName={cat(mainTest)?.name} />
+            {sideTests.length ? (
+              <div className="grid gap-3 lg:grid-rows-3">
+                {sideTests.map((post) => (
+                  <TestCard key={post.id} post={post} categoryName={cat(post)?.name} />
+                ))}
+              </div>
             ) : null}
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-rows-2">
-            {small.map((post) => (
-              <StoryCard key={post.id} post={post} category={cat(post)} className="lg:aspect-auto" />
-            ))}
-          </div>
-          <TopStories posts={stories} />
-        </div>
-      </section>
-
-      <section aria-labelledby="latest-tests">
-        <SectionHeading id="latest-tests" title="Latest Research" viewAllSlug="reviews" />
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          {mainTest ? <TestCard post={mainTest} large categoryName={cat(mainTest)?.name} /> : null}
-          <div className="grid gap-3 lg:grid-rows-3">
-            {sideTests.map((post) => (
-              <TestCard key={post.id} post={post} categoryName={cat(post)?.name} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <Newsletter />
     </div>

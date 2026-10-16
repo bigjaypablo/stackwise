@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { GlassPanel } from "@/components/glass-panel";
 import { PageHeading } from "@/components/page-heading";
 import { StoryCard } from "@/components/story-card";
 import { categoryById, postsByCategory, usePublicData } from "@/lib/use-public";
@@ -80,60 +79,6 @@ export function SearchPage({ query }: { query: string }) {
   );
 }
 
-export function ContactPage() {
-  const [email, setEmail] = useState("");
-  const [note, setNote] = useState("");
-  const address = "editors@stackwise.example";
-
-  return (
-    <GlassPanel className="mx-auto max-w-xl p-6 sm:p-8">
-      <PageHeading title="Contact" />
-      <p className="mt-3 text-ink/75">
-        Email only. Write <a className="font-semibold text-accent" href={`mailto:${address}`}>{address}</a>. This demo does not store messages on a server.
-      </p>
-      <form
-        className="mt-6 space-y-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          const subject = encodeURIComponent("Stackwise note");
-          const body = encodeURIComponent(`${note}\n\nFrom: ${email}`);
-          window.location.href = `mailto:${address}?subject=${subject}&body=${body}`;
-        }}
-      >
-        <div>
-          <label htmlFor="contact-email" className="text-sm font-semibold">
-            Your email
-          </label>
-          <input
-            id="contact-email"
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            className="field mt-1 h-12"
-          />
-        </div>
-        <div>
-          <label htmlFor="contact-note" className="text-sm font-semibold">
-            Note
-          </label>
-          <textarea
-            id="contact-note"
-            required
-            rows={5}
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-            className="field mt-1 py-3"
-          />
-        </div>
-        <button type="submit" className="pill-accent">
-          Open email
-        </button>
-      </form>
-    </GlassPanel>
-  );
-}
-
 export function NotFoundPage() {
   return (
     <div className="py-16 text-center">
@@ -147,4 +92,4 @@ export function NotFoundPage() {
   );
 }
 
-export { AboutPage, DisclosurePage, PrivacyPage } from "@/components/static-pages";
+export { AboutPage, ContactPage, DisclosurePage, PrivacyPage } from "@/components/static-pages";

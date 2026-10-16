@@ -38,7 +38,7 @@ export function Newsletter() {
             }
             addSubscriber(email)
               .then(() => {
-                setMessage("You're on the list. This demo stores the address in this browser.");
+                setMessage("You're on the list. Thanks for subscribing.");
                 setEmail("");
               })
               .catch((reason: unknown) => {

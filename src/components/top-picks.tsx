@@ -13,6 +13,7 @@ function PlusIcon() {
 export function TopPicksGlass() {
   const data = usePublicData();
   const tools = data.tools.slice(0, 5);
+  if (tools.length === 0) return null;
 
   return (
     <aside className="glass flex flex-col rounded-[1.75rem] p-4 sm:p-5">

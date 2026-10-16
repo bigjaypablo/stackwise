@@ -15,13 +15,11 @@ import { TimeAgo } from "@/components/time-ago";
 import { getPostBySlug } from "@/lib/api";
 import { articleJsonLd, jsonLdScript } from "@/lib/seo";
 import { affiliateById, categoryById, usePublicData } from "@/lib/use-public";
-import { findSeedPost } from "@/lib/seed";
 import type { Post } from "@/lib/types";
 
 export function PostPage({ slug }: { slug: string }) {
   const data = usePublicData();
-  const seeded = findSeedPost(slug) ?? null;
-  const [post, setPost] = useState<Post | null>(seeded);
+  const [post, setPost] = useState<Post | null>(null);
   const [missing, setMissing] = useState(false);
 
   useEffect(() => {
