@@ -8,6 +8,7 @@ export function CategoryPage({ slug }: { slug: string }) {
   const data = usePublicData();
   const category = data.categories.find((item) => item.slug === slug);
   const posts = postsByCategory(data.posts, data.categories, slug);
+  if (!data.ready) return <div className="glass min-h-64 animate-pulse rounded-[1.75rem]" aria-busy="true" aria-label="Loading" />;
 
   if (!category) {
     return (
@@ -37,6 +38,7 @@ export function SearchPage({ query }: { query: string }) {
   const data = usePublicData();
   const navigate = useNavigate();
   const [value, setValue] = useState(query);
+  if (!data.ready) return <div className="glass min-h-64 animate-pulse rounded-[1.75rem]" aria-busy="true" aria-label="Loading" />;
   const needle = query.trim().toLowerCase();
   const results = needle
     ? data.posts.filter((post) => `${post.title} ${post.summary} ${post.body}`.toLowerCase().includes(needle))

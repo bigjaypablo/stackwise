@@ -10,6 +10,7 @@ import type { Post } from "@/lib/types";
 
 export function HomePage() {
   const data = usePublicData();
+  if (!data.ready) return <div className="glass min-h-[28rem] animate-pulse rounded-[1.75rem]" aria-busy="true" aria-label="Loading" />;
   const cat = (post?: Post) => (post ? categoryById(data.categories, post.categoryId) : undefined);
 
   const posts = [...data.posts].sort((a, b) =>

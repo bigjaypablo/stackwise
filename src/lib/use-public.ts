@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getPublicSnapshot, subscribeChanges } from "@/lib/api";
+import { useEffect, useMemo, useState } from "react";
+import { demoMode, getPublicSnapshot, subscribeChanges } from "@/lib/api";
 import { freshSeed } from "@/lib/seed";
 import type { Affiliate, Category, Post, PublicSnapshot, Tool } from "@/lib/types";
 
@@ -14,17 +14,26 @@ function seedSnapshot(): PublicSnapshot {
   };
 }
 
-export function usePublicData(): PublicSnapshot {
-  const [snapshot, setSnapshot] = useState<PublicSnapshot>(seedSnapshot);
+function emptySnapshot(): PublicSnapshot {
+  return { posts: [], categories: [], tools: [], affiliates: [], demo: false };
+}
+
+export function usePublicData(): PublicSnapshot & { ready: boolean } {
+  const [snapshot, setSnapshot] = useState<PublicSnapshot>(() => (demoMode ? seedSnapshot() : emptySnapshot()));
+  const [ready, setReady] = useState(demoMode);
 
   useEffect(() => {
     let cancel = false;
     const load = () => {
       getPublicSnapshot()
         .then((next) => {
-          if (!cancel) setSnapshot(next);
+          if (cancel) return;
+          setSnapshot(next);
+          setReady(true);
         })
-        .catch(() => undefined);
+        .catch(() => {
+          if (!cancel) setReady(true);
+        });
     };
     load();
     const unsubscribe = subscribeChanges(load);
@@ -34,7 +43,7 @@ export function usePublicData(): PublicSnapshot {
     };
   }, []);
 
-  return snapshot;
+  return useMemo(() => ({ ...snapshot, ready }), [snapshot, ready]);
 }
 
 export function categoryById(categories: Category[], id: string): Category | undefined {
