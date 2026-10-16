@@ -1,12 +1,12 @@
 export const SITE = {
   name: "Stackwise",
-  tagline: "Tools tested before you pay.",
+  tagline: "Research before you pay.",
 };
 
 export const OWNER = {
   name: "Big Jay",
   handle: "0xNormadOnChain",
-  bio: "I run Stackwise. I test crypto, AI and SaaS tools and post what I find on X as I go.",
+  bio: "I run Stackwise. I research crypto, AI and SaaS tools and share what I find on X.",
   avatarUrl: "",
 };
 

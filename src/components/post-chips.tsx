@@ -1,4 +1,4 @@
-import { TestedSeal } from "@/components/tested-seal";
+import { ResearchMark } from "@/components/research-mark";
 import type { Category, Post } from "@/lib/types";
 
 const DAY = 86_400_000;
@@ -30,8 +30,8 @@ export function PostChips({
       key: "tested",
       node: (
         <span className={CHIP}>
-          <TestedSeal className="size-3.5" />
-          Tested
+          <ResearchMark className="size-3.5" />
+          Deep dive
         </span>
       ),
     });

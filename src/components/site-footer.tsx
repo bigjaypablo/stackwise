@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/logo";
 import { Socials } from "@/components/socials";
-import { TestedSeal } from "@/components/tested-seal";
+import { ResearchMark } from "@/components/research-mark";
 
 const columns = [
   {
@@ -46,11 +46,11 @@ export function SiteFooter() {
         <div>
           <Logo tone="paper" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/70">
-            Independent notes on crypto, AI, and SaaS tools. We test before we link.
+            Independent research on crypto, AI, and SaaS tools.
           </p>
           <p className="glass-dark mt-4 inline-flex items-center gap-2 rounded-full py-1.5 pl-2 pr-3 text-xs font-semibold">
-            <TestedSeal className="size-4" />
-            Every pick is tested first
+            <ResearchMark className="size-4" />
+            Research only. Not financial advice.
           </p>
           <Socials tone="dark" className="mt-4" />
         </div>
@@ -82,7 +82,7 @@ export function SiteFooter() {
       <div className="relative border-t border-paper/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-xs text-paper/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Stackwise. All rights reserved.</p>
-          <p>Some outbound tool links are affiliate links. We may earn a commission. Scores are written before the link is added.</p>
+          <p>Some outbound links are affiliate links and we may earn a commission. Information only. Do your own research.</p>
         </div>
       </div>
     </footer>

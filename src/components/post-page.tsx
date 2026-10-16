@@ -9,7 +9,7 @@ import { MarkdownBody } from "@/components/markdown-body";
 import { OurPick } from "@/components/our-pick";
 import { SectionHeading } from "@/components/section-heading";
 import { StoryCard } from "@/components/story-card";
-import { TestedBadge } from "@/components/tested-seal";
+import { ResearchBadge } from "@/components/research-mark";
 import { TimeAgo } from "@/components/time-ago";
 import { getPostBySlug } from "@/lib/api";
 import { articleJsonLd, jsonLdScript } from "@/lib/seo";
@@ -70,7 +70,7 @@ export function PostPage({ slug }: { slug: string }) {
         <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent">
           {category?.name}
         </span>
-        {post.isTest ? <TestedBadge tone="light" /> : null}
+        {post.isTest ? <ResearchBadge tone="light" /> : null}
       </div>
       <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight sm:text-5xl">{post.title}</h1>
       <p className="mt-4 text-sm text-ink/65">

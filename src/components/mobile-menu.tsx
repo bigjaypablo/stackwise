@@ -131,7 +131,7 @@ export function MobileMenu({ open, onClose }: { open: boolean; onClose: () => vo
       </div>
 
       <div className="relative flex shrink-0 items-center justify-between gap-3 border-t border-ink/10 bg-white/80 px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl">
-        <p className="min-w-0 text-sm font-semibold leading-snug text-ink/85">Tools tested before you pay.</p>
+        <p className="min-w-0 text-sm font-semibold leading-snug text-ink/85">Research before you pay.</p>
         <Link to="/" hash="newsletter" onClick={onClose} className="pill-accent shrink-0">
           Subscribe
         </Link>

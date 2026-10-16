@@ -273,9 +273,9 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
                 onChange={(event) => update({ isTest: event.target.checked })}
               />
               <span>
-                We tested this
+                Deep dive
                 <span className="block text-xs font-normal text-ink/55">
-                  Shows the Tested seal and lists it under Latest Tests. Only tick it if someone really ran the test.
+                  Adds a Deep dive tag and lists it under Latest Research. Use it for your longest, best-sourced posts.
                 </span>
               </span>
             </label>

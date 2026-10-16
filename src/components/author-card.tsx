@@ -29,7 +29,7 @@ export function AuthorCard() {
           <XIcon className="size-4" />
           Follow @{OWNER.handle}
         </a>
-        <p className="text-xs text-ink/55">Every test gets a short thread first, with the raw notes.</p>
+        <p className="text-xs text-ink/55">New research and updates, shared on X.</p>
       </div>
     </aside>
   );

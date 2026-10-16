@@ -73,7 +73,7 @@ export function HomePage() {
       </section>
 
       <section aria-labelledby="latest-tests">
-        <SectionHeading id="latest-tests" title="Latest Tests" viewAllSlug="reviews" />
+        <SectionHeading id="latest-tests" title="Latest Research" viewAllSlug="reviews" />
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           {mainTest ? <TestCard post={mainTest} large categoryName={cat(mainTest)?.name} /> : null}
           <div className="grid gap-3 lg:grid-rows-3">

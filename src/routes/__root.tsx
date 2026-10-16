@@ -8,7 +8,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: SITE.name },
-      { name: "description", content: "Tools tested before you pay. Reviews of crypto, AI, and SaaS tools." },
+      { name: "description", content: "Plain-English research on crypto, AI and SaaS tools. Information only, not financial advice." },
       { name: "theme-color", content: "#0B1220" },
       { name: "twitter:site", content: `@${OWNER.handle}` },
       { name: "twitter:creator", content: `@${OWNER.handle}` },

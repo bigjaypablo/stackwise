@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Cover } from "@/components/cover";
 import { PlayIcon } from "@/components/icons";
-import { TestedBadge } from "@/components/tested-seal";
+import { ResearchBadge } from "@/components/research-mark";
 import { TimeAgo } from "@/components/time-ago";
 import { coverCategory } from "@/lib/category-slug";
 import { safeHttpUrl } from "@/lib/format";
@@ -37,7 +37,7 @@ export function TestCard({
       <Link to="/post/$slug" params={{ slug: post.slug }} aria-label={post.title} className="absolute inset-0 z-10" />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-3 sm:p-4">
-        {large ? <TestedBadge /> : <span />}
+        {large ? <ResearchBadge /> : <span />}
         {post.duration ? (
           <span className="glass-dark rounded-full px-2.5 py-1 text-xs font-semibold tabular-nums">
             {post.duration}

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { AffiliateLink } from "@/components/affiliate-link";
-import { TestedSeal } from "@/components/tested-seal";
+import { ResearchMark } from "@/components/research-mark";
 import { affiliateById, usePublicData } from "@/lib/use-public";
 
 function PlusIcon() {
@@ -37,7 +37,7 @@ export function TopPicksGlass() {
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-1.5 truncate font-semibold">
                   <span className="truncate">{tool.name}</span>
-                  <TestedSeal className="size-4 shrink-0" />
+                  <ResearchMark className="size-4 shrink-0" />
                 </p>
                 <p className="mt-0.5 flex items-center gap-2 truncate text-xs text-ink/60">
                   <span className="rounded-full bg-ink px-2 py-0.5 font-bold tabular-nums text-white">

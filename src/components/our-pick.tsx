@@ -1,5 +1,5 @@
 import { AffiliateLink } from "@/components/affiliate-link";
-import { TestedSeal } from "@/components/tested-seal";
+import { ResearchMark } from "@/components/research-mark";
 import type { Affiliate } from "@/lib/types";
 
 export function OurPick({ affiliate }: { affiliate: Affiliate }) {
@@ -13,7 +13,7 @@ export function OurPick({ affiliate }: { affiliate: Affiliate }) {
           <p className="text-xs font-bold uppercase tracking-wider text-accent">Our pick</p>
           <h2 id="our-pick" className="flex items-center gap-2 text-xl font-extrabold">
             <span className="truncate">{affiliate.name}</span>
-            <TestedSeal className="size-5 shrink-0" />
+            <ResearchMark className="size-5 shrink-0" />
           </h2>
         </div>
       </div>

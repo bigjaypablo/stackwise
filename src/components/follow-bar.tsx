@@ -57,7 +57,7 @@ export function FollowBar() {
   return (
     <div className="fade-in fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 mx-auto max-w-md">
       <div className="glass flex items-center gap-3 rounded-full py-2 pl-5 pr-2">
-        <p className="min-w-0 flex-1 truncate text-sm font-semibold">Get the next test on X</p>
+        <p className="min-w-0 flex-1 truncate text-sm font-semibold">Get new research on X</p>
         <a
           href={X_FOLLOW_URL}
           target="_blank"
