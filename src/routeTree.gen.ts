@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicSplatRouteImport } from './routes/_public/$'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
@@ -37,6 +38,11 @@ const PublicRouteRoute = PublicRouteRouteImport.update({
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
@@ -134,6 +140,7 @@ const AdminPostsIdRoute = AdminPostsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$': typeof PublicSplatRoute
   '/about': typeof PublicAboutRoute
   '/affiliate-disclosure': typeof PublicAffiliateDisclosureRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/admin/posts/': typeof AdminPostsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$': typeof PublicSplatRoute
   '/about': typeof PublicAboutRoute
   '/affiliate-disclosure': typeof PublicAffiliateDisclosureRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_public/$': typeof PublicSplatRoute
   '/_public/about': typeof PublicAboutRoute
   '/_public/affiliate-disclosure': typeof PublicAffiliateDisclosureRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/sitemap.xml'
     | '/$'
     | '/about'
     | '/affiliate-disclosure'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/posts/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/sitemap.xml'
     | '/$'
     | '/about'
     | '/affiliate-disclosure'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_public'
     | '/admin'
+    | '/sitemap.xml'
     | '/_public/$'
     | '/_public/about'
     | '/_public/affiliate-disclosure'
@@ -264,6 +276,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public/': {
@@ -470,6 +490,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   PublicRouteRoute: PublicRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

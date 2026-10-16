@@ -17,12 +17,13 @@ import { articleJsonLd, jsonLdScript } from "@/lib/seo";
 import { affiliateById, categoryById, usePublicData } from "@/lib/use-public";
 import type { Post } from "@/lib/types";
 
-export function PostPage({ slug }: { slug: string }) {
+export function PostPage({ slug, initialPost = null }: { slug: string; initialPost?: Post | null }) {
   const data = usePublicData();
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<Post | null>(initialPost);
   const [missing, setMissing] = useState(false);
 
   useEffect(() => {
+    if (initialPost) return;
     let cancel = false;
     getPostBySlug(slug)
       .then((next) => {
@@ -36,7 +37,7 @@ export function PostPage({ slug }: { slug: string }) {
     return () => {
       cancel = true;
     };
-  }, [slug]);
+  }, [slug, initialPost]);
 
   if (!post) {
     return (
