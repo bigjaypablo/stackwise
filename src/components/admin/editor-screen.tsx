@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { PublishBar } from "@/components/admin/publish-bar";
-import { MarkdownBody } from "@/components/markdown-body";
+import { RichEditor, type RichEditorHandle } from "@/components/admin/rich-editor";
 import { deletePost, getAffiliates, getCategories, getPostById, savePost } from "@/lib/api";
 import { slugify } from "@/lib/format";
 import type { Affiliate, Category, Post, PostStatus, Role } from "@/lib/types";
@@ -29,6 +29,11 @@ const empty = (id: string, categoryId: string, authorId: string): Post => ({
   publishedAt: "",
 });
 
+function readMinutesFor(markdown: string): number {
+  const words = markdown.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
 function problemBeforePublish(post: Post): string | null {
   if (!post.title.trim() || post.title.trim() === "Untitled") return "Give the story a real title before publishing.";
   if (!post.summary.trim()) return "Add a summary before publishing. It shows on cards and in search results.";
@@ -39,7 +44,10 @@ function problemBeforePublish(post: Post): string | null {
 
 export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const navigate = useNavigate();
+  const editorRef = useRef<RichEditorHandle>(null);
+  const version = useRef(0);
   const [post, setPost] = useState<Post | null>(null);
+  const [initialBody, setInitialBody] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);
   const [slugLocked, setSlugLocked] = useState(true);
@@ -48,25 +56,43 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const [busy, setBusy] = useState(false);
   const [state, setState] = useState("Loading…");
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"write" | "preview">("write");
   const canPublish = role === "admin" || role === "editor";
 
-  const persist = useCallback((next: Post) => {
+  const persist = useCallback(async (next: Post): Promise<boolean> => {
+    const started = version.current;
     setBusy(true);
     setState("Saving…");
-    return savePost(next)
-      .then((saved) => {
-        setPost(saved);
-        setSavedStatus(saved.status);
+    try {
+      const saved = await savePost(next);
+      setPost((current) =>
+        current
+          ? {
+              ...current,
+              id: saved.id,
+              authorId: saved.authorId,
+              authorName: saved.authorName,
+              createdAt: saved.createdAt,
+              updatedAt: saved.updatedAt,
+              publishedAt: saved.publishedAt,
+              slug: current.slug === next.slug ? saved.slug : current.slug,
+              status: next.status,
+            }
+          : current,
+      );
+      setSavedStatus(saved.status);
+      if (version.current === started) {
         setDirty(false);
         setState("Saved");
-        setError("");
-      })
-      .catch((reason: unknown) => {
-        setState("Not saved");
-        setError(reason instanceof Error ? reason.message : "Save failed.");
-      })
-      .finally(() => setBusy(false));
+      }
+      setError("");
+      return true;
+    } catch (reason) {
+      setState("Not saved");
+      setError(reason instanceof Error ? reason.message : "Save failed.");
+      return false;
+    } finally {
+      setBusy(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -74,9 +100,11 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
     Promise.all([getPostById(id), getCategories(), getAffiliates()])
       .then(([found, nextCategories, nextAffiliates]) => {
         if (cancel) return;
+        const loaded = found ?? empty(id, nextCategories[0]?.id ?? "", "");
         setCategories(nextCategories);
         setAffiliates(nextAffiliates);
-        setPost(found ?? empty(id, nextCategories[0]?.id ?? "", ""));
+        setPost(loaded);
+        setInitialBody(loaded.body);
         setSavedStatus(found?.status ?? "draft");
         setSlugLocked(Boolean(found));
         setState(found ? "Saved" : "New draft");
@@ -90,21 +118,21 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   }, [id]);
 
   useEffect(() => {
-    if (!post || !dirty || savedStatus === "published") return;
+    if (!post || !dirty || busy || savedStatus === "published") return;
     const timer = window.setTimeout(() => {
-      persist(post);
+      void persist(post);
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [post, dirty, savedStatus, persist]);
+  }, [post, dirty, busy, savedStatus, persist]);
 
   useEffect(() => {
-    if (!dirty || savedStatus !== "published") return;
+    if (!dirty) return;
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty, savedStatus]);
+  }, [dirty]);
 
-  if (!post) {
+  if (!post || initialBody === null) {
     return <p>{error || state}</p>;
   }
 
@@ -113,36 +141,43 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const liveDirty = live && dirty;
 
   const update = (patch: Partial<Post>) => {
+    version.current += 1;
     setPost((current) => (current ? { ...current, ...patch } : current));
     setDirty(true);
   };
 
-  function changeStatus(next: PostStatus) {
-    if (!post) return;
+  const withLatestBody = (): Post => {
+    const body = editorRef.current?.flush();
+    return body == null ? post : { ...post, body, readMinutes: readMinutesFor(body) };
+  };
+
+  async function changeStatus(next: PostStatus) {
+    const current = withLatestBody();
     if (next === "published") {
-      const problem = problemBeforePublish(post);
+      const problem = problemBeforePublish(current);
       if (problem) {
         setError(problem);
         return;
       }
     }
     setError("");
-    const slug = next === "published" && post.slug.startsWith("untitled") ? slugify(post.title) : post.slug;
-    persist({ ...post, status: next, slug });
+    const slug = next === "published" && current.slug.startsWith("untitled") ? slugify(current.title) : current.slug;
+    const ok = await persist({ ...current, status: next, slug });
+    if (ok) setPost((latest) => (latest ? { ...latest, status: next, slug } : latest));
   }
 
-  function updateLive() {
-    if (!post) return;
-    const problem = problemBeforePublish(post);
+  async function updateLive() {
+    const current = withLatestBody();
+    const problem = problemBeforePublish(current);
     if (problem) {
       setError(problem);
       return;
     }
-    persist(post);
+    await persist(current);
   }
 
   return (
-    <div>
+    <div className="pb-24">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link to="/admin/posts" className="text-sm font-semibold text-accent">
@@ -216,32 +251,14 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
               onChange={(event) => update({ summary: event.target.value })}
               className="field py-3"
             />
-            <div className="flex gap-2 lg:hidden">
-              <button type="button" className={tab === "write" ? "pill-accent h-10" : "pill-light h-10"} onClick={() => setTab("write")}>
-                Write
-              </button>
-              <button type="button" className={tab === "preview" ? "pill-accent h-10" : "pill-light h-10"} onClick={() => setTab("preview")}>
-                Preview
-              </button>
-            </div>
-            <div className="grid gap-3 lg:grid-cols-2">
-              <div className={tab === "preview" ? "hidden lg:block" : ""}>
-                <label className="block text-sm font-semibold" htmlFor="body">
-                  Markdown
-                </label>
-                <textarea
-                  id="body"
-                  rows={16}
-                  value={post.body}
-                  onChange={(event) => update({ body: event.target.value })}
-                  className="field mt-1 py-3 font-mono text-sm"
-                />
-              </div>
-              <div className={`glass rounded-[1.75rem] p-4 ${tab === "write" ? "hidden lg:block" : ""}`}>
-                <p className="text-sm font-semibold">Preview</p>
-                <MarkdownBody source={post.body || "_Nothing yet._"} affiliates={affiliates} />
-              </div>
-            </div>
+            <p className="pt-1 text-sm font-semibold">Story</p>
+            <RichEditor
+              key={id}
+              ref={editorRef}
+              value={initialBody}
+              disabled={locked}
+              onChange={(markdown) => update({ body: markdown, readMinutes: readMinutesFor(markdown) })}
+            />
           </div>
 
           <aside className="glass space-y-3 rounded-[1.75rem] p-4 lg:sticky lg:top-3 lg:self-start">
@@ -335,10 +352,14 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
       <PublishBar
         role={role}
         status={savedStatus}
-        onStatus={changeStatus}
+        onStatus={(next) => {
+          void changeStatus(next);
+        }}
         busy={busy}
         unsaved={liveDirty}
-        onUpdate={updateLive}
+        onUpdate={() => {
+          void updateLive();
+        }}
       />
     </div>
   );
