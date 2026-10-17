@@ -9,6 +9,7 @@ type DeskPath =
   | "/admin/tools"
   | "/admin/subscribers"
   | "/admin/comments"
+  | "/admin/account"
   | "/admin/team";
 
 const LINKS: Array<{ to: DeskPath; label: string; roles: Role[] }> = [
@@ -18,6 +19,7 @@ const LINKS: Array<{ to: DeskPath; label: string; roles: Role[] }> = [
   { to: "/admin/tools", label: "Top Picks", roles: ["admin"] },
   { to: "/admin/subscribers", label: "Subscribers", roles: ["admin", "editor"] },
   { to: "/admin/comments", label: "Comments", roles: ["admin", "editor"] },
+  { to: "/admin/account", label: "Account", roles: ["admin", "editor", "writer"] },
   { to: "/admin/team", label: "Team", roles: ["admin"] },
 ];
 

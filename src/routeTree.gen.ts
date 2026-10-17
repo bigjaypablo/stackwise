@@ -20,6 +20,7 @@ import { Route as PublicContactRouteImport } from './routes/_public/contact'
 import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
 import { Route as PublicSearchRouteImport } from './routes/_public/search'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAccountRouteImport } from './routes/admin/account'
 import { Route as AdminAffiliatesRouteImport } from './routes/admin/affiliates'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
@@ -86,6 +87,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAccountRoute = AdminAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminAffiliatesRoute = AdminAffiliatesRouteImport.update({
   id: '/affiliates',
   path: '/affiliates',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof PublicContactRoute
   '/privacy': typeof PublicPrivacyRoute
   '/search': typeof PublicSearchRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
   '/privacy': typeof PublicPrivacyRoute
   '/search': typeof PublicSearchRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/_public/contact': typeof PublicContactRoute
   '/_public/privacy': typeof PublicPrivacyRoute
   '/_public/search': typeof PublicSearchRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/affiliates': typeof AdminAffiliatesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/search'
+    | '/admin/account'
     | '/admin/affiliates'
     | '/admin/comments'
     | '/admin/login'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/search'
+    | '/admin/account'
     | '/admin/affiliates'
     | '/admin/comments'
     | '/admin/login'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/_public/contact'
     | '/_public/privacy'
     | '/_public/search'
+    | '/admin/account'
     | '/admin/affiliates'
     | '/admin/comments'
     | '/admin/login'
@@ -356,6 +368,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/account': {
+      id: '/admin/account'
+      path: '/account'
+      fullPath: '/admin/account'
+      preLoaderRoute: typeof AdminAccountRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/affiliates': {
@@ -460,6 +479,7 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
 )
 
 interface AdminRouteRouteChildren {
+  AdminAccountRoute: typeof AdminAccountRoute
   AdminAffiliatesRoute: typeof AdminAffiliatesRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -472,6 +492,7 @@ interface AdminRouteRouteChildren {
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAccountRoute: AdminAccountRoute,
   AdminAffiliatesRoute: AdminAffiliatesRoute,
   AdminCommentsRoute: AdminCommentsRoute,
   AdminLoginRoute: AdminLoginRoute,
