@@ -99,7 +99,7 @@ export function RichEditor({
   );
 
   return (
-    <div className="rich glass rounded-[1.75rem]">
+    <div className="rich glass min-w-0 max-w-full rounded-[1.75rem]">
       {editor ? (
         <EditorToolbar
           editor={editor}

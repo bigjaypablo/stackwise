@@ -411,3 +411,9 @@
     pointer-events: none;
   }
 }
+
+@layer components {
+  .rich .ProseMirror {
+    overflow-wrap: anywhere;
+  }
+}

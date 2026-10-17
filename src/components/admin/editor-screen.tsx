@@ -202,8 +202,8 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
       {locked ? <p className="mt-3 text-sm text-ink/60">This published story is locked for writers.</p> : null}
 
       <fieldset disabled={locked} className="mt-4 min-w-0 border-0 p-0">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
-          <div className="space-y-3">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
+          <div className="min-w-0 space-y-3">
             <label className="block text-sm font-semibold" htmlFor="title">
               Title
             </label>
@@ -261,7 +261,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
             />
           </div>
 
-          <aside className="glass space-y-3 rounded-[1.75rem] p-4 lg:sticky lg:top-3 lg:self-start">
+          <aside className="glass min-w-0 space-y-3 rounded-[1.75rem] p-4 lg:sticky lg:top-3 lg:self-start">
             <ImageUpload value={post.coverUrl} onChange={(url) => update({ coverUrl: url })} />
             <label className="block text-sm font-semibold" htmlFor="category">
               Category

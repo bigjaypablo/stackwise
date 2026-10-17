@@ -87,8 +87,8 @@ export function EditorToolbar({
   }
 
   return (
-    <div className="sticky top-2 z-20 rounded-t-[1.75rem] border-b border-ink/10 bg-white/90 px-2 py-1.5 backdrop-blur">
-      <div className="no-scrollbar flex items-center gap-0.5 overflow-x-auto">
+    <div className="sticky top-2 z-20 min-w-0 max-w-full rounded-t-[1.75rem] border-b border-ink/10 bg-white/90 px-2 py-1.5 backdrop-blur">
+      <div className="no-scrollbar flex max-w-full items-center gap-0.5 overflow-x-auto">
         <Tool label="Undo" disabled={off || !editor.can().undo()} onClick={() => chain().undo().run()}>
           ↶
         </Tool>
