@@ -27,6 +27,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminSubscribersRouteImport } from './routes/admin/subscribers'
 import { Route as AdminTeamRouteImport } from './routes/admin/team'
 import { Route as AdminToolsRouteImport } from './routes/admin/tools'
+import { Route as ApiTeamRouteImport } from './routes/api/team'
 import { Route as PublicCategorySlugRouteImport } from './routes/_public/category.$slug'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post.$slug'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
@@ -122,6 +123,11 @@ const AdminToolsRoute = AdminToolsRouteImport.update({
   path: '/tools',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const ApiTeamRoute = ApiTeamRouteImport.update({
+  id: '/api/team',
+  path: '/api/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicCategorySlugRoute = PublicCategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/tools': typeof AdminToolsRoute
+  '/api/team': typeof ApiTeamRoute
   '/admin/': typeof AdminIndexRoute
   '/category/$slug': typeof PublicCategorySlugRoute
   '/post/$slug': typeof PublicPostSlugRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByTo {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/tools': typeof AdminToolsRoute
+  '/api/team': typeof ApiTeamRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/category/$slug': typeof PublicCategorySlugRoute
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/tools': typeof AdminToolsRoute
+  '/api/team': typeof ApiTeamRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/category/$slug': typeof PublicCategorySlugRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/admin/team'
     | '/admin/tools'
+    | '/api/team'
     | '/admin/'
     | '/category/$slug'
     | '/post/$slug'
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/admin/team'
     | '/admin/tools'
+    | '/api/team'
     | '/'
     | '/admin'
     | '/category/$slug'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/admin/team'
     | '/admin/tools'
+    | '/api/team'
     | '/_public/'
     | '/admin/'
     | '/_public/category/$slug'
@@ -289,6 +301,7 @@ export interface RootRouteChildren {
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiTeamRoute: typeof ApiTeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminToolsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/api/team': {
+      id: '/api/team'
+      path: '/api/team'
+      fullPath: '/api/team'
+      preLoaderRoute: typeof ApiTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/category/$slug': {
       id: '/_public/category/$slug'
       path: '/category/$slug'
@@ -512,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRouteRoute: PublicRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

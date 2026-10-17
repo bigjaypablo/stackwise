@@ -1,22 +1,31 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { TimeAgo } from "@/components/time-ago";
 import { deletePost, getCategories, getPosts, saveCategory, savePost } from "@/lib/api";
 import { slugify } from "@/lib/format";
 import type { Category, Post, PostStatus, Role } from "@/lib/types";
 
-const FILTERS: Array<PostStatus | "all"> = ["all", "draft", "in_review", "published"];
+const FILTERS: Array<{ key: PostStatus | "all"; label: string }> = [
+  { key: "all", label: "All" },
+  { key: "draft", label: "Drafts" },
+  { key: "in_review", label: "In review" },
+  { key: "published", label: "Published" },
+];
+const DOT: Record<PostStatus, string> = { draft: "bg-slate-400", in_review: "bg-amber-400", published: "bg-emerald-500" };
+const LABEL: Record<PostStatus, string> = { draft: "Draft", in_review: "In review", published: "Published" };
 
 export function PostsScreen({ role, userId }: { role: Role; userId: string }) {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<PostStatus | "all">("all");
+  const [filter, setFilter] = useState<PostStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState("");
   const [catName, setCatName] = useState("");
+  const canManage = role !== "writer";
 
   const load = () => {
-    Promise.all([getPosts({ status, search, includeUnpublished: true }), getCategories()])
+    Promise.all([getPosts({ status: "all", includeUnpublished: true }), getCategories()])
       .then(([nextPosts, nextCategories]) => {
         setPosts(nextPosts);
         setCategories(nextCategories);
@@ -26,132 +35,165 @@ export function PostsScreen({ role, userId }: { role: Role; userId: string }) {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, []);
+
+  const counts = useMemo(() => {
+    const result: Record<string, number> = { all: posts.length, draft: 0, in_review: 0, published: 0 };
+    for (const post of posts) result[post.status] += 1;
+    return result;
+  }, [posts]);
+
+  const shown = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    return posts
+      .filter((post) => filter === "all" || post.status === filter)
+      .filter((post) => !needle || post.title.toLowerCase().includes(needle))
+      .sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+  }, [posts, filter, search]);
+
+  function createDraft() {
+    const id = crypto.randomUUID();
+    savePost({
+      id,
+      slug: `untitled-${id.slice(0, 6)}`,
+      title: "Untitled",
+      summary: "",
+      body: "",
+      categoryId: categories[0]?.id ?? "",
+      coverUrl: "",
+      featured: false,
+      status: "draft",
+      authorId: userId,
+      authorName: "",
+      youtubeUrl: "",
+      duration: "",
+      isTest: false,
+      readMinutes: 3,
+      affiliateId: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      publishedAt: "",
+    })
+      .then(() => navigate({ to: "/admin/posts/$id", params: { id } }))
+      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Could not create a draft."));
+  }
 
   return (
-    <div>
+    <div className="max-w-4xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold">Posts</h1>
-        <button
-          type="button"
-          className="h-11 rounded-full bg-accent px-4 text-sm font-semibold text-paper"
-          onClick={() => {
-            const id = crypto.randomUUID();
-            const categoryId = categories[0]?.id ?? "";
-            savePost({
-              id,
-              slug: `untitled-${id.slice(0, 6)}`,
-              title: "Untitled",
-              summary: "",
-              body: "",
-              categoryId,
-              coverUrl: "",
-              featured: false,
-              status: "draft",
-              authorId: userId,
-              authorName: "",
-              youtubeUrl: "",
-              duration: "",
-              isTest: false,
-              readMinutes: 3,
-              affiliateId: "",
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-              publishedAt: "",
-            })
-              .then(() => navigate({ to: "/admin/posts/$id", params: { id } }))
-              .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Could not create a draft."));
-          }}
-        >
+        <h1 className="text-2xl font-extrabold tracking-tight">Posts</h1>
+        <button type="button" className="pill-accent" onClick={createDraft}>
           New post
         </button>
       </div>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <label className="sr-only" htmlFor="post-filter">
-          Status
-        </label>
-        <select
-          id="post-filter"
-          value={status}
-          onChange={(event) => setStatus(event.target.value as PostStatus | "all")}
-          className="h-11 rounded-xl border border-line bg-paper px-3 text-sm"
-        >
-          {FILTERS.map((item) => (
-            <option key={item} value={item}>
-              {item === "all" ? "All statuses" : item === "in_review" ? "In review" : item}
-            </option>
-          ))}
-        </select>
-        <form
-          className="flex flex-1 gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            load();
-          }}
-        >
-          <label htmlFor="post-search" className="sr-only">
-            Search posts
-          </label>
-          <input
-            id="post-search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search titles"
-            className="h-11 w-full rounded-xl border border-line bg-paper px-3 text-sm"
-          />
-          <button type="submit" className="h-11 rounded-full border border-line bg-paper px-4 text-sm font-semibold">
-            Search
-          </button>
-        </form>
+
+      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto" role="tablist" aria-label="Filter by status">
+        {FILTERS.map((item) => {
+          const active = filter === item.key;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setFilter(item.key)}
+              className={`h-10 shrink-0 rounded-full border px-4 text-sm font-semibold ${
+                active ? "border-ink bg-ink text-white" : "border-white/80 bg-white/70 text-ink"
+              }`}
+            >
+              {item.label} ({counts[item.key] ?? 0})
+            </button>
+          );
+        })}
       </div>
+
+      <div className="mt-3">
+        <label htmlFor="post-search" className="sr-only">
+          Search posts
+        </label>
+        <input
+          id="post-search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search titles"
+          className="field h-11"
+        />
+      </div>
+
       {error ? (
-        <p className="mt-3 text-sm text-accent" role="alert">
+        <p className="mt-3 text-sm text-red-600" role="alert">
           {error}
         </p>
       ) : null}
-      <ul className="mt-4 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-paper">
-        {posts.map((post) => (
-          <li key={post.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <Link to="/admin/posts/$id" params={{ id: post.id }} className="font-semibold hover:text-accent">
-                {post.title}
-              </Link>
-              <p className="text-xs text-ink/60">
-                {post.authorName} · {labelStatus(post.status)}
-                {role === "writer" && post.authorId !== userId ? " · locked" : ""}
-              </p>
-            </div>
-            {role !== "writer" ? (
-              <button
-                type="button"
-                className="h-10 rounded-full px-3 text-sm font-semibold text-ink/70 hover:bg-mist"
-                onClick={() => {
-                  if (!window.confirm("Delete this story?")) return;
-                  deletePost(post.id).then(load).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Delete failed."));
-                }}
-              >
-                Delete
-              </button>
-            ) : null}
-          </li>
-        ))}
-        {posts.length === 0 ? <li className="px-4 py-8 text-sm text-ink/60">No stories in this filter.</li> : null}
-      </ul>
 
-      {role !== "writer" ? (
-        <section className="mt-8 rounded-2xl border border-line bg-paper p-4">
-          <h2 className="font-extrabold">Categories</h2>
-          <ul className="mt-3 space-y-2 text-sm">
+      <ul className="mt-4 space-y-3">
+        {shown.map((post) => {
+          const locked = role === "writer" && post.authorId !== userId;
+          return (
+            <li key={post.id} className="glass flex flex-wrap items-center gap-3 rounded-3xl p-4">
+              <span aria-hidden="true" className={`size-2.5 shrink-0 rounded-full ${DOT[post.status]}`} />
+              <div className="min-w-0 flex-1">
+                <Link
+                  to="/admin/posts/$id"
+                  params={{ id: post.id }}
+                  className="line-clamp-2 font-semibold hover:text-accent"
+                >
+                  {post.title}
+                </Link>
+                <p className="mt-0.5 text-xs text-ink/60">
+                  {LABEL[post.status]} · {post.authorName || "Unknown author"} · <TimeAgo iso={post.updatedAt} />
+                  {locked ? " · locked" : ""}
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-1.5">
+                {post.status === "published" ? (
+                  <a href={`/post/${post.slug}`} target="_blank" rel="noopener" className="pill-light">
+                    View
+                  </a>
+                ) : null}
+                <Link to="/admin/posts/$id" params={{ id: post.id }} className="pill-light">
+                  Edit
+                </Link>
+                {canManage ? (
+                  <button
+                    type="button"
+                    className="pill-light text-red-600"
+                    onClick={() => {
+                      if (!window.confirm("Delete this story?")) return;
+                      deletePost(post.id)
+                        .then(load)
+                        .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Delete failed."));
+                    }}
+                  >
+                    Delete
+                  </button>
+                ) : null}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      {shown.length === 0 ? (
+        <p className="glass mt-4 rounded-3xl px-5 py-8 text-center text-sm text-ink/65">
+          {posts.length === 0 ? "No posts yet. Tap New post to write your first." : "Nothing matches that filter."}
+        </p>
+      ) : null}
+
+      {canManage ? (
+        <section className="glass mt-8 rounded-[1.75rem] p-5">
+          <h2 className="text-lg font-extrabold tracking-tight">Categories</h2>
+          <ul className="mt-3 flex flex-wrap gap-2">
             {categories.map((category) => (
-              <li key={category.id} className="flex justify-between gap-3 border-b border-line py-2">
-                <span>{category.name}</span>
-                <span className="text-ink/50">{category.slug}</span>
+              <li key={category.id} className="rounded-full border border-white/80 bg-white/70 px-3 py-1.5 text-sm">
+                {category.name}
+                <span className="ml-1.5 text-ink/45">
+                  {posts.filter((post) => post.categoryId === category.id).length}
+                </span>
               </li>
             ))}
           </ul>
           <form
-            className="mt-3 flex gap-2"
+            className="mt-4 flex gap-2"
             onSubmit={(event) => {
               event.preventDefault();
               saveCategory({ id: crypto.randomUUID(), slug: slugify(catName), name: catName, description: "" })
@@ -170,10 +212,10 @@ export function PostsScreen({ role, userId }: { role: Role; userId: string }) {
               value={catName}
               onChange={(event) => setCatName(event.target.value)}
               placeholder="New category name"
-              className="h-11 flex-1 rounded-xl border border-line px-3 text-sm"
+              className="field h-11 flex-1"
               required
             />
-            <button type="submit" className="h-11 rounded-full bg-ink px-4 text-sm font-semibold text-paper">
+            <button type="submit" className="pill-accent h-11">
               Add
             </button>
           </form>
@@ -181,9 +223,4 @@ export function PostsScreen({ role, userId }: { role: Role; userId: string }) {
       ) : null}
     </div>
   );
-}
-
-function labelStatus(status: PostStatus) {
-  if (status === "in_review") return "In review";
-  return status;
 }
