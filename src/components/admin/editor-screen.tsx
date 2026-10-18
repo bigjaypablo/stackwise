@@ -46,6 +46,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const navigate = useNavigate();
   const editorRef = useRef<RichEditorHandle>(null);
   const version = useRef(0);
+  const failedAt = useRef<number | null>(null);
   const [post, setPost] = useState<Post | null>(null);
   const [initialBody, setInitialBody] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -80,6 +81,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
           : current,
       );
       setSavedStatus(saved.status);
+      failedAt.current = null;
       if (version.current === started) {
         setDirty(false);
         setState("Saved");
@@ -87,6 +89,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
       setError("");
       return true;
     } catch (reason) {
+      failedAt.current = started;
       setState("Not saved");
       setError(reason instanceof Error ? reason.message : "Save failed.");
       return false;
@@ -118,7 +121,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   }, [id]);
 
   useEffect(() => {
-    if (!post || !dirty || busy || savedStatus === "published") return;
+    if (!post || !dirty || busy || savedStatus === "published" || failedAt.current === version.current) return;
     const timer = window.setTimeout(() => {
       void persist(post);
     }, 900);

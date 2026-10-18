@@ -23,7 +23,6 @@
       radial-gradient(900px 480px at 8% -8%, #e4e8ff 0%, transparent 62%),
       radial-gradient(800px 460px at 100% 4%, #e6f0ff 0%, transparent 58%),
       var(--color-haze);
-    background-attachment: fixed;
     color: var(--color-ink);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
@@ -415,5 +414,27 @@
 @layer components {
   .rich .ProseMirror {
     overflow-wrap: anywhere;
+  }
+}
+
+/* Phones: blur filters are expensive and make scrolling jitter on mid-range devices. */
+@media (max-width: 1023px) {
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .glass {
+    background: rgb(255 255 255 / 0.9);
+  }
+  .glass-dark {
+    background: rgb(10 15 30 / 0.6);
+  }
+  .pill-glass {
+    background: rgb(255 255 255 / 0.28);
+  }
+  .glass-night {
+    background: rgb(255 255 255 / 0.1);
   }
 }
