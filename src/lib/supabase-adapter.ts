@@ -200,7 +200,11 @@ export async function savePost(input: Post): Promise<Post> {
     updatedAt: now,
     publishedAt: input.status === "published" ? existing?.publishedAt || now : "",
   };
-  const { data, error } = await supabase().from("posts").upsert(toRow(next)).select("*").single();
+  const row = toRow(next);
+  const table = supabase().from("posts");
+  const { data, error } = existing
+    ? await table.update(row).eq("id", next.id).select("*").single()
+    : await table.insert(row).select("*").single();
   if (error) throw new Error(error.message);
   return toPost(data as PostRow);
 }
