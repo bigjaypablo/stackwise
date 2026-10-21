@@ -11,6 +11,7 @@ export const Route = createFileRoute("/_public/search")({
       title: "Search — Stackwise",
       description: "Search published Stackwise reviews, comparisons, guides, and deals.",
       path: "/search",
+      noindex: true,
     }),
   component: function SearchRoute() {
     const { q } = Route.useSearch();
