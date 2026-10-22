@@ -18,18 +18,6 @@ const BANNED = [
 ];
 
 const SOURCES_HEADING = /^#{1,6}\s*sources\s*$/im;
-const NEXT_HEADING = /^#{1,6}\s/m;
-
-function splitAtSources(body: string): { main: string; sources: string } {
-  const match = SOURCES_HEADING.exec(body);
-  if (!match) return { main: body, sources: "" };
-  const after = body.slice(match.index + match[0].length);
-  const next = NEXT_HEADING.exec(after);
-  return {
-    main: body.slice(0, match.index),
-    sources: next ? after.slice(0, next.index) : after,
-  };
-}
 
 function countWords(markdown: string): number {
   return markdown
@@ -39,15 +27,17 @@ function countWords(markdown: string): number {
     .filter(Boolean).length;
 }
 
-function countSources(section: string): number {
-  const urls = section.match(/https?:\/\/[^\s)\]>]+/g) ?? [];
+function countSourceLinks(markdown: string): number {
+  const withoutImages = markdown.replace(/!\[[^\]]*\]\([^)]*\)/g, "");
+  const urls = withoutImages.match(/https?:\/\/[^\s)\]>]+/g) ?? [];
   return new Set(urls.map((url) => url.replace(/[.,;]+$/, ""))).size;
 }
 
 export function publishBlockers(post: Post): string | null {
   const kind = post.isTest ? "deep" : "standard";
   const label = post.isTest ? "Deep dive" : "Standard article";
-  const { main, sources } = splitAtSources(post.body);
+  const match = SOURCES_HEADING.exec(post.body);
+  const main = match ? post.body.slice(0, match.index) : post.body;
 
   const words = countWords(main);
   if (words < MIN_WORDS[kind]) {
@@ -57,15 +47,13 @@ export function publishBlockers(post: Post): string | null {
   const h2 = (main.match(/^##\s+\S/gm) ?? []).length;
   if (h2 < MIN_H2) return `Add at least ${MIN_H2} descriptive H2 subheads. This one has ${h2}.`;
 
-  if (!SOURCES_HEADING.test(post.body)) return 'Add a "Sources" heading with your source links at the end.';
-
-  const found = countSources(sources);
+  const found = countSourceLinks(post.body);
   if (found < MIN_SOURCES[kind]) {
-    return `${label} needs at least ${MIN_SOURCES[kind]} source links. Found ${found}.`;
+    return `${label} needs at least ${MIN_SOURCES[kind]} different source links in the text. Found ${found}.`;
   }
 
   if (!/last checked\W{0,6}[^\n]*\d/i.test(post.body)) {
-    return 'Add a "Last checked: date" line near the Sources list.';
+    return 'Add a "Last checked: date" line, for example "Last checked: 22 October 2026".';
   }
 
   const lower = post.body.toLowerCase();
