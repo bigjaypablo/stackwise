@@ -60,6 +60,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const [busy, setBusy] = useState(false);
   const [state, setState] = useState("Loading…");
   const [error, setError] = useState("");
+  const [tried, setTried] = useState(false);
   const canPublish = role === "admin" || role === "editor";
 
   const persist = useCallback(async (next: Post): Promise<boolean> => {
@@ -145,6 +146,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
   const live = savedStatus === "published";
   const locked = role === "writer" && live;
   const liveDirty = live && dirty;
+  const blocker = tried ? problemBeforePublish(post) : null;
 
   const update = (patch: Partial<Post>) => {
     version.current += 1;
@@ -162,7 +164,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
     if (next === "published") {
       const problem = problemBeforePublish(current);
       if (problem) {
-        setError(problem);
+        setTried(true);
         return;
       }
     }
@@ -176,7 +178,7 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
     const current = withLatestBody();
     const problem = problemBeforePublish(current);
     if (problem) {
-      setError(problem);
+      setTried(true);
       return;
     }
     await persist(current);
@@ -355,6 +357,14 @@ export function EditorScreen({ id, role }: { id: string; role: Role }) {
         </div>
       </fieldset>
 
+      {blocker ? (
+        <p
+          role="alert"
+          className="sticky bottom-[4.75rem] z-20 mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700"
+        >
+          Not ready to publish: {blocker}
+        </p>
+      ) : null}
       <PublishBar
         role={role}
         status={savedStatus}

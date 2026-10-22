@@ -52,10 +52,6 @@ export function publishBlockers(post: Post): string | null {
     return `${label} needs at least ${MIN_SOURCES[kind]} different source links in the text. Found ${found}.`;
   }
 
-  if (!/last checked\W{0,6}[^\n]*\d/i.test(post.body)) {
-    return 'Add a "Last checked: date" line, for example "Last checked: 22 October 2026".';
-  }
-
   const lower = post.body.toLowerCase();
   const hit = BANNED.find((phrase) => lower.includes(phrase));
   if (hit) return `Remove the phrase "${hit}". Stackwise does not claim testing, scores or guarantees.`;
