@@ -99,6 +99,8 @@ export function looksLikeMarkdown(text: string): boolean {
     /(^|\n)#{1,6}\s\S/.test(text) ||
     /\*\*[^*\n]+\*\*/.test(text) ||
     /(^|\n)\s*([-*+]|\d+[.)])\s+\S/.test(text) ||
-    /(^|\n)\s*\|.+\|/.test(text)
+    /(^|\n)\s*\|.+\|/.test(text) ||
+    /\[[^\]]+\]\(https?:\/\/[^)\s]+\)/.test(text) ||
+    /(^|\n)\s*>\s*\S/.test(text)
   );
 }
