@@ -6,6 +6,7 @@ import { RichEditor, type RichEditorHandle } from "@/components/admin/rich-edito
 import { deletePost, getAffiliates, getCategories, getPostById, savePost } from "@/lib/api";
 import { slugify } from "@/lib/format";
 import type { Affiliate, Category, Post, PostStatus, Role } from "@/lib/types";
+import { publishBlockers } from "@/lib/publish-checks";
 
 const empty = (id: string, categoryId: string, authorId: string): Post => ({
   id,
@@ -35,6 +36,8 @@ function readMinutesFor(markdown: string): number {
 }
 
 function problemBeforePublish(post: Post): string | null {
+  const blocked = publishBlockers(post);
+  if (blocked) return blocked;
   if (!post.title.trim() || post.title.trim() === "Untitled") return "Give the story a real title before publishing.";
   if (!post.summary.trim()) return "Add a summary before publishing. It shows on cards and in search results.";
   if (post.body.trim().length < 40) return "The story body is too short to publish.";
