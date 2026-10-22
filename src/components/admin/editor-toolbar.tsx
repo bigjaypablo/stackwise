@@ -163,25 +163,6 @@ export function EditorToolbar({
         </Tool>
       </div>
 
-      {editor.isActive("table") && !off ? (
-        <div className="no-scrollbar mt-1 flex items-center gap-0.5 overflow-x-auto border-t border-ink/10 pt-1">
-          <Tool label="Add row below" onClick={() => chain().addRowAfter().run()}>
-            + Row
-          </Tool>
-          <Tool label="Add column after" onClick={() => chain().addColumnAfter().run()}>
-            + Column
-          </Tool>
-          <Tool label="Delete row" onClick={() => chain().deleteRow().run()}>
-            − Row
-          </Tool>
-          <Tool label="Delete column" onClick={() => chain().deleteColumn().run()}>
-            − Column
-          </Tool>
-          <Tool label="Delete table" onClick={() => chain().deleteTable().run()}>
-            Delete table
-          </Tool>
-        </div>
-      ) : null}
 
       {note ? (
         <p role="alert" className="px-2 pt-1 text-xs text-red-600">

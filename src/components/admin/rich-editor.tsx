@@ -9,6 +9,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { EditorToolbar } from "@/components/admin/editor-toolbar";
+import { TableTools } from "@/components/admin/table-tools";
 import { cleanMarkdown } from "@/lib/markdown-clean";
 import { MarkdownPaste } from "@/lib/markdown-paste";
 
@@ -28,6 +29,7 @@ export function RichEditor({
   disabled?: boolean;
   ref?: Ref<RichEditorHandle>;
 }) {
+  const box = useRef<HTMLDivElement>(null);
   const timer = useRef<number | null>(null);
   const latest = useRef(onChange);
   const [source, setSource] = useState(false);
@@ -99,7 +101,7 @@ export function RichEditor({
   );
 
   return (
-    <div className="rich glass min-w-0 max-w-full rounded-[1.75rem]">
+    <div ref={box} className="rich glass relative min-w-0 max-w-full rounded-[1.75rem]">
       {editor ? (
         <EditorToolbar
           editor={editor}
@@ -111,6 +113,7 @@ export function RichEditor({
           }}
         />
       ) : null}
+      {editor && !source ? <TableTools editor={editor} containerRef={box} disabled={disabled} /> : null}
       {source ? (
         <textarea
           readOnly
