@@ -9,6 +9,9 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { EditorToolbar } from "@/components/admin/editor-toolbar";
+import { PreviewPane } from "@/components/admin/preview-pane";
+import { useTextSize } from "@/components/admin/use-text-size";
+import { ViewControls } from "@/components/admin/view-controls";
 import { TableTools } from "@/components/admin/table-tools";
 import { cleanMarkdown } from "@/lib/markdown-clean";
 import { MarkdownPaste } from "@/lib/markdown-paste";
@@ -34,6 +37,9 @@ export function RichEditor({
   const latest = useRef(onChange);
   const [source, setSource] = useState(false);
   const [sourceText, setSourceText] = useState("");
+  const [preview, setPreview] = useState(false);
+  const [previewText, setPreviewText] = useState("");
+  const { zoom, change: changeZoom } = useTextSize();
 
   useEffect(() => {
     latest.current = onChange;
@@ -113,7 +119,21 @@ export function RichEditor({
           }}
         />
       ) : null}
-      {editor && !source ? <TableTools editor={editor} containerRef={box} disabled={disabled} /> : null}
+      {editor && !source && !preview ? <TableTools editor={editor} containerRef={box} disabled={disabled} /> : null}
+      {editor ? (
+        <ViewControls
+          preview={preview}
+          zoom={zoom}
+          onZoom={changeZoom}
+          onTogglePreview={() => {
+            if (!preview) {
+              setPreviewText(editor.getMarkdown());
+              setSource(false);
+            }
+            setPreview((open) => !open);
+          }}
+        />
+      ) : null}
       {source ? (
         <textarea
           readOnly
@@ -122,7 +142,9 @@ export function RichEditor({
           className="block min-h-[22rem] w-full resize-y rounded-b-[1.75rem] bg-transparent p-4 font-mono text-xs leading-relaxed outline-none"
         />
       ) : (
-        <EditorContent editor={editor} />
+        <div style={{ zoom: zoom / 100 }}>
+          {preview ? <PreviewPane markdown={previewText} /> : <EditorContent editor={editor} />}
+        </div>
       )}
     </div>
   );
