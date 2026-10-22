@@ -9,6 +9,8 @@ export function canonical(path: string): string {
   return `${origin}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+const DEFAULT_IMAGE = "/og.jpg";
+
 function absolute(url: string): string {
   return /^https?:\/\//i.test(url) ? url : canonical(url);
 }
@@ -22,7 +24,7 @@ export function pageHead(input: {
   image?: string;
 }) {
   const url = canonical(input.path);
-  const image = input.image ? absolute(input.image) : undefined;
+  const image = absolute(input.image || DEFAULT_IMAGE);
   const meta: Array<Record<string, string>> = [
     { title: input.title },
     { name: "description", content: input.description },
